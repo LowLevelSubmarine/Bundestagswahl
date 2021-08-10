@@ -7,12 +7,15 @@ import org.springframework.stereotype.Component
 
 
 @Component
-class ParserService {
+class ParserService(val httpClientService: HttpClientService) {
 
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     @Scheduled(fixedDelay = 30000)
     fun parse() {
+
         logger.info("LOL")
+        httpClientService.getForUrl("https://api.dawum.de/dasdasd")
+        logger.info("DONE")
     }
 }

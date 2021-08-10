@@ -21,6 +21,9 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	implementation("com.google.code.gson:gson:2.8.7")
+	implementation("org.springframework.boot:spring-boot-starter-web")
+
+	implementation("com.squareup.okhttp3:okhttp:4.9.1")
 }
 
 tasks.withType<KotlinCompile> {
