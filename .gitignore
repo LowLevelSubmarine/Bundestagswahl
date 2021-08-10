@@ -1,0 +1,5 @@
+# Ignore .gradle
+.gradle/
+
+# Ignore .idea
+.idea/
