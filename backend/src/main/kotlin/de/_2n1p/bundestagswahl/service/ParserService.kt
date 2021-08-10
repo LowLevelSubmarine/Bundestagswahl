@@ -13,8 +13,8 @@ class ParserService(val httpClientService: HttpClientService) {
 
     @Scheduled(fixedDelay = 30000)
     fun parse() {
-
         logger.info("LOL")
         httpClientService.getForUrl("https://api.dawum.de")
     }
+
 }

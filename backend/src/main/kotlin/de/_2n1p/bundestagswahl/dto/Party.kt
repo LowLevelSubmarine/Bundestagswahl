@@ -1,23 +1,20 @@
 package de._2n1p.bundestagswahl.dto
 
-import com.google.gson.JsonParser
+import com.google.gson.JsonElement
 import de._2n1p.bundestagswahl.utils.Gson.Companion.surf
 
 data class Party(
-    val id: Long,
     val shortcut: String,
     val name: String
-)  {
-    companion object {
+) {
 
-        fun fromJson(id: Long, json: String): Party {
-            val gson = JsonParser.parseString(json)
+    companion object {
+        fun fromJson(gson: JsonElement): Party {
             return Party(
-                id = id,
                 shortcut = gson.surf("Shortcut").asString,
                 name = gson.surf("Name").asString
             )
         }
-
     }
+
 }

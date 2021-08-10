@@ -12,9 +12,9 @@ class Gson {
             } else {
                 val key = keys[0]
                 if (key is String) {
-                    return this.asJsonObject.get(key).surf(keys.copyOfRange(1, keys.size))
+                    return this.asJsonObject.get(key).surf(*keys.copyOfRange(1, keys.size))
                 } else if (key is Int) {
-                    return this.asJsonArray.get(key).surf(keys.copyOfRange(1, keys.size))
+                    return this.asJsonArray.get(key).surf(*keys.copyOfRange(1, keys.size))
                 } else {
                     return JsonNull.INSTANCE
                 }

@@ -1,11 +1,10 @@
 package de._2n1p.bundestagswahl.dto
 
-import com.google.gson.JsonParser
+import com.google.gson.JsonElement
 import de._2n1p.bundestagswahl.utils.Gson.Companion.surf
 import java.time.LocalDate
 
 data class Survey(
-    val id: Long,
     val date: LocalDate,
     val surveyPeriodStart: LocalDate,
     val surveyPeriodEnd: LocalDate,
@@ -17,10 +16,8 @@ data class Survey(
 ) {
     companion object {
 
-        fun fromJson(id: Long, json: String): Survey {
-            val gson = JsonParser.parseString(json)
+        fun fromJson(gson: JsonElement): Survey {
             return Survey(
-                id = id,
                 date = LocalDate.parse(gson.surf("Date").asString),
                 surveyPeriodStart = LocalDate.parse(gson.surf("Survey_Period", "Date_Start").asString),
                 surveyPeriodEnd = LocalDate.parse(gson.surf("Survey_Period", "Date_Start").asString),
