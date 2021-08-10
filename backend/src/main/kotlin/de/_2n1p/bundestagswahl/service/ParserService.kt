@@ -15,7 +15,6 @@ class ParserService(val httpClientService: HttpClientService) {
     fun parse() {
 
         logger.info("LOL")
-        httpClientService.getForUrl("https://api.dawum.de/dasdasd")
-        logger.info("DONE")
+        httpClientService.getForUrl("https://api.dawum.de")
     }
 }

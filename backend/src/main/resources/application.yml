@@ -1,8 +1,8 @@
-spring
-  output
-    ansi
+spring:
+  output:
+    ansi:
       enabled=always
-  banner
+  banner:
     location=banner.txt
-server
+server:
   port=8080
