@@ -18,6 +18,10 @@ class CombinedSurvey(surveys: List<Survey>) {
         this.surveyByInstitute = map
     }
 
+    fun calcAdjustments(): Map<Long, Float> {
+        
+    }
+
     fun getDate(date: LocalDate, surveys: MutableList<Survey>): Map<Long, Float> {
         for (survey in surveys) {
             if (survey.date == date) return survey.results
