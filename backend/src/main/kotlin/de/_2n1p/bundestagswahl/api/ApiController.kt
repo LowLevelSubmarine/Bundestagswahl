@@ -17,7 +17,7 @@ import java.time.LocalDate
 @RequestMapping( "/api")
 class ApiController(val parserService: ParserService) {
 
-    @GetMapping("result")
+    @GetMapping("/result")
     fun results(): ResultDto {
         return ResultDto(listOf(SurveyPoint(LocalDate.now(),5f,"LOL","BILD")))
     }
