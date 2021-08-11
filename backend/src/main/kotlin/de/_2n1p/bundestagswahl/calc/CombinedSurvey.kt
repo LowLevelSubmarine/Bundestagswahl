@@ -21,11 +21,11 @@ class CombinedSurvey(private val surveys: List<Survey>) {
 
     fun calcPartyAdjustments(date: LocalDate, range: Int): Map<Long, Map<Long, Float>> {
         val map = mutableMapOf<Long, MutableMap<Long, Float>>()
-        val newestSurveyEpochDay = surveys.minByOrNull { it.date }!!.date.toEpochDay()
-        val oldestSurveyEpochDay = surveys.maxByOrNull { it.date }!!.date.toEpochDay()
-        val startDay = max(date.toEpochDay() - range, newestSurveyEpochDay)
-        val endDay = min(date.toEpochDay() + range, oldestSurveyEpochDay)
-        val days = startDay - endDay
+        val newestSurveyEpochDay = surveys.maxByOrNull { it.date }!!.date.toEpochDay()
+        val oldestSurveyEpochDay = surveys.minByOrNull { it.date }!!.date.toEpochDay()
+        val startDay = min(date.toEpochDay() - range, newestSurveyEpochDay)
+        val endDay = max(date.toEpochDay() + range, oldestSurveyEpochDay)
+        val days = endDay - startDay
         for (i in startDay..endDay) {
             val currentDate = LocalDate.ofEpochDay(i)
             for (entry in this.surveyByInstitute.entries) {

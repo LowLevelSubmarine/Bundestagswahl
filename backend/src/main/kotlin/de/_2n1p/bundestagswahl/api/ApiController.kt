@@ -19,7 +19,7 @@ class ApiController(val parserService: ParserService) {
 
     @GetMapping("/result")
     fun results(): ResultDto {
-        return ResultDto(listOf(SurveyPoint(LocalDate.now(),5f,"LOL","BILD")))
+        return parserService.result ?: throw RessourceNotAvailibleException()
     }
 
 
