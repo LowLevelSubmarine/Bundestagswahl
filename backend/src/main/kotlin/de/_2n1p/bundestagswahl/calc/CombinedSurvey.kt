@@ -36,8 +36,21 @@ class CombinedSurvey(private val surveys: List<Survey>) {
                 }
             }
         }
+        val averageByParty = mutableMapOf<Long, Float>()
+        for (instituteEntry in averageByInstitute) {
+            for (partyEntry in instituteEntry.value) {
+                averageByParty[partyEntry.key] = averageByParty.getOrDefault(partyEntry.key, 0F) + partyEntry.value / averageByInstitute.size
+            }
+        }
         val adjustmentsByInstitute = mutableMapOf<Long, MutableMap<Long, Float>>()
-        return averageByInstitute
+        for (instituteEntry in averageByInstitute) {
+            val adjustmentsByParty = mutableMapOf<Long, Float>()
+            for (partyEntry in instituteEntry.value) {
+                adjustmentsByParty[partyEntry.key] = partyEntry.value - averageByParty[partyEntry.key]!!
+            }
+            adjustmentsByInstitute[instituteEntry.key] = adjustmentsByParty
+        }
+        return adjustmentsByInstitute
     }
 
     fun getDate(date: LocalDate, surveys: List<Survey>): Map<Long, Float> {

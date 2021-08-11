@@ -3,8 +3,6 @@ package de._2n1p.bundestagswahl.calc
 import de._2n1p.bundestagswahl.data.Dawum
 import de._2n1p.bundestagswahl.dto.Survey
 import de._2n1p.bundestagswahl.dto.SurveyPoint
-import java.time.LocalDate
-import java.time.Period
 
 class GraphCalculator {
 
