@@ -21,8 +21,8 @@ class CombinedSurvey(private val surveys: List<Survey>) {
 
     fun calcPartyAdjustments(date: LocalDate, range: Int): Map<Long, Map<Long, Float>> {
         val averageByInstitute = mutableMapOf<Long, MutableMap<Long, Float>>()
-        val newestSurveyEpochDay = surveys.maxByOrNull { it.date }!!.date.toEpochDay()
-        val oldestSurveyEpochDay = surveys.minByOrNull { it.date }!!.date.toEpochDay()
+        val newestSurveyEpochDay = surveys.maxByOrNull { it.calcPeriodDate() }!!.calcPeriodDate().toEpochDay()
+        val oldestSurveyEpochDay = surveys.minByOrNull { it.calcPeriodDate() }!!.calcPeriodDate().toEpochDay()
         val startDay = min(date.toEpochDay() - range, newestSurveyEpochDay)
         val endDay = max(date.toEpochDay() + range, oldestSurveyEpochDay)
         val days = endDay - startDay
@@ -55,10 +55,10 @@ class CombinedSurvey(private val surveys: List<Survey>) {
 
     fun getDate(date: LocalDate, surveys: List<Survey>): Map<Long, Float> {
         for (survey in surveys) {
-            if (survey.date == date) return survey.results
+            if (survey.calcPeriodDate() == date) return survey.results
         }
-        val surveyNext = surveys.stream().filter { it.date.isAfter(date) }.min(DayDistance(date)).orElse(null)
-        val surveyPrev = surveys.stream().filter { it.date.isBefore(date) }.min(DayDistance(date)).orElse(null)
+        val surveyNext = surveys.stream().filter { it.calcPeriodDate().isAfter(date) }.min(DayDistance(date)).orElse(null)
+        val surveyPrev = surveys.stream().filter { it.calcPeriodDate().isBefore(date) }.min(DayDistance(date)).orElse(null)
         if (surveyNext == null || surveyPrev == null) {
             if (surveyNext != null) return surveyNext.results
             else if (surveyPrev != null) return surveyPrev.results
@@ -68,7 +68,7 @@ class CombinedSurvey(private val surveys: List<Survey>) {
     }
 
     private fun interpolateSurvey(s1: Survey, s2: Survey, date: LocalDate): Map<Long, Float> {
-        val pos = (date.toEpochDay() - s1.date.toEpochDay()).toFloat() / (s2.date.toEpochDay() - s1.date.toEpochDay())
+        val pos = (date.toEpochDay() - s1.calcPeriodDate().toEpochDay()).toFloat() / (s2.calcPeriodDate().toEpochDay() - s1.calcPeriodDate().toEpochDay())
         val map = mutableMapOf<Long, Float>()
         val partyIds = s1.results.keys.union(s2.results.keys)
         for (partyId in partyIds) {
@@ -84,7 +84,7 @@ class CombinedSurvey(private val surveys: List<Survey>) {
     private class DayDistance(private val optimum: LocalDate) : Comparator<Survey> {
 
         override fun compare(p0: Survey?, p1: Survey?): Int {
-            return Period.between(p0!!.date, optimum).days - Period.between(p1!!.date, optimum).days
+            return Period.between(p0!!.calcPeriodDate(), optimum).days - Period.between(p1!!.calcPeriodDate(), optimum).days
         }
 
     }
