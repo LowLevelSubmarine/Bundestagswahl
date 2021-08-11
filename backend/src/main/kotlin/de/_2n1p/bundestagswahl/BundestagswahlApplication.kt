@@ -16,16 +16,4 @@ fun main(args: Array<String>) {
 @SpringBootApplication
 class BundestagswahlApplication {
 
-	private val client = HttpClientService()
-	private lateinit var dawum: Dawum
-
-	init {
-		updateDawum()
-		println(dawum.surveys.size)
-	}
-
-	private fun updateDawum() {
-		dawum = Dawum(DawumDbRequest(client).fetch())
-	}
-
 }
