@@ -1,10 +1,12 @@
 package de._2n1p.bundestagswahl.calc
 
 import de._2n1p.bundestagswahl.dto.Survey
+import java.lang.Long.max
+import java.lang.Long.min
 import java.time.LocalDate
 import java.time.Period
 
-class CombinedSurvey(surveys: List<Survey>) {
+class CombinedSurvey(private val surveys: List<Survey>) {
 
     val surveyByInstitute: Map<Long, List<Survey>>
 
@@ -17,13 +19,27 @@ class CombinedSurvey(surveys: List<Survey>) {
         this.surveyByInstitute = map
     }
 
-    fun calcPartyAdjustments(date: LocalDate): Map<Long, Map<Long, Float>> {
-        for (institue in this.surveyByInstitute.keys) {
-            
+    fun calcPartyAdjustments(date: LocalDate, range: Int): Map<Long, Map<Long, Float>> {
+        val map = mutableMapOf<Long, MutableMap<Long, Float>>()
+        val newestSurveyEpochDay = surveys.minByOrNull { it.date }!!.date.toEpochDay()
+        val oldestSurveyEpochDay = surveys.maxByOrNull { it.date }!!.date.toEpochDay()
+        val startDay = max(date.toEpochDay() - range, newestSurveyEpochDay)
+        val endDay = min(date.toEpochDay() + range, oldestSurveyEpochDay)
+        val days = startDay - endDay
+        for (i in startDay..endDay) {
+            val currentDate = LocalDate.ofEpochDay(i)
+            for (entry in this.surveyByInstitute.entries) {
+                val result = getDate(currentDate, entry.value)
+                for (partyId in result.keys) {
+                    val partyScore = map.getOrPut(entry.key) { mutableMapOf() }
+                    partyScore[partyId] = partyScore.getOrDefault(partyId, 0F) + (result[partyId]!! / days)
+                }
+            }
         }
+        return map
     }
 
-    fun getDate(date: LocalDate, surveys: MutableList<Survey>): Map<Long, Float> {
+    fun getDate(date: LocalDate, surveys: List<Survey>): Map<Long, Float> {
         for (survey in surveys) {
             if (survey.date == date) return survey.results
         }
