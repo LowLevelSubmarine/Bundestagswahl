@@ -3,7 +3,6 @@ package de._2n1p.bundestagswahl.calc
 import de._2n1p.bundestagswahl.dto.Survey
 import java.time.LocalDate
 import java.time.Period
-import kotlin.math.abs
 
 class CombinedSurvey(surveys: List<Survey>) {
 
@@ -18,24 +17,41 @@ class CombinedSurvey(surveys: List<Survey>) {
         this.surveyByInstitute = map
     }
 
-    fun calcAdjustments(): Map<Long, Float> {
-        
+    fun calcPartyAdjustments(date: LocalDate): Map<Long, Map<Long, Float>> {
+        for (institue in this.surveyByInstitute.keys) {
+            
+        }
     }
 
     fun getDate(date: LocalDate, surveys: MutableList<Survey>): Map<Long, Float> {
         for (survey in surveys) {
             if (survey.date == date) return survey.results
         }
-        var surveyNext = surveys.stream().filter { it.date.isAfter(date) }.min(DayDistance(date)).get()
-        var surveyPrev = surveys.stream().filter { it.date.isBefore(date) }.min(DayDistance(date)).get()
+        val surveyNext = surveys.stream().filter { it.date.isAfter(date) }.min(DayDistance(date)).orElse(null)
+        val surveyPrev = surveys.stream().filter { it.date.isBefore(date) }.min(DayDistance(date)).orElse(null)
+        if (surveyNext == null || surveyPrev == null) {
+            if (surveyNext != null) return surveyNext.results
+            else if (surveyPrev != null) return surveyPrev.results
+            else return mapOf()
+        }
         return interpolateSurvey(surveyPrev, surveyNext, date)
     }
 
-    fun interpolateSurvey(s1: Survey, s2: Survey, date: LocalDate): Map<Long, Float> {
-
+    private fun interpolateSurvey(s1: Survey, s2: Survey, date: LocalDate): Map<Long, Float> {
+        val pos = (date.toEpochDay() - s1.date.toEpochDay()).toFloat() / (s2.date.toEpochDay() - s1.date.toEpochDay())
+        val map = mutableMapOf<Long, Float>()
+        val partyIds = s1.results.keys.union(s2.results.keys)
+        for (partyId in partyIds) {
+            map[partyId] = Interpolate.linear(
+                s1.results.getOrDefault(partyId, 0F),
+                s2.results.getOrDefault(partyId, 0F),
+                pos
+            )
+        }
+        return map
     }
 
-    class DayDistance(private val optimum: LocalDate) : Comparator<Survey> {
+    private class DayDistance(private val optimum: LocalDate) : Comparator<Survey> {
 
         override fun compare(p0: Survey?, p1: Survey?): Int {
             return Period.between(p0!!.date, optimum).days - Period.between(p1!!.date, optimum).days
