@@ -14,8 +14,8 @@ data class Survey(
     val taskerId: Long,
     val results: Map<Long, Float>
 ) {
-    companion object {
 
+    companion object {
         fun fromJson(gson: JsonElement): Survey {
             return Survey(
                 date = LocalDate.parse(gson.surf("Date").asString),
@@ -28,6 +28,10 @@ data class Survey(
                 results = gson.surf("Results").asJsonObject.entrySet().associate { Pair(it.key.toLong(), it.value.asFloat) }
             )
         }
-
     }
+
+    fun calcPeriodDate(): LocalDate {
+        return LocalDate.ofEpochDay((this.surveyPeriodStart.toEpochDay() + this.surveyPeriodEnd.toEpochDay()) / 2)
+    }
+
 }
