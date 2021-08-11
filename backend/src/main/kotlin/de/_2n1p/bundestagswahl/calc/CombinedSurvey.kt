@@ -20,7 +20,7 @@ class CombinedSurvey(private val surveys: List<Survey>) {
     }
 
     fun calcPartyAdjustments(date: LocalDate, range: Int): Map<Long, Map<Long, Float>> {
-        val map = mutableMapOf<Long, MutableMap<Long, Float>>()
+        val averageByInstitute = mutableMapOf<Long, MutableMap<Long, Float>>()
         val newestSurveyEpochDay = surveys.maxByOrNull { it.date }!!.date.toEpochDay()
         val oldestSurveyEpochDay = surveys.minByOrNull { it.date }!!.date.toEpochDay()
         val startDay = min(date.toEpochDay() - range, newestSurveyEpochDay)
@@ -31,12 +31,13 @@ class CombinedSurvey(private val surveys: List<Survey>) {
             for (entry in this.surveyByInstitute.entries) {
                 val result = getDate(currentDate, entry.value)
                 for (partyId in result.keys) {
-                    val partyScore = map.getOrPut(entry.key) { mutableMapOf() }
+                    val partyScore = averageByInstitute.getOrPut(entry.key) { mutableMapOf() }
                     partyScore[partyId] = partyScore.getOrDefault(partyId, 0F) + (result[partyId]!! / days)
                 }
             }
         }
-        return map
+        val adjustmentsByInstitute = mutableMapOf<Long, MutableMap<Long, Float>>()
+        return averageByInstitute
     }
 
     fun getDate(date: LocalDate, surveys: List<Survey>): Map<Long, Float> {
