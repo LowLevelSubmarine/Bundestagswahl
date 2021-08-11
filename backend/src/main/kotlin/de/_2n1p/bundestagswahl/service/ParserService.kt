@@ -35,6 +35,7 @@ class ParserService(val httpClientService: HttpClientService) {
         logger.info("Fetched new JSON")
         dawum = Dawum(DawumDbRequest(httpClientService).fetch())
         val surveyPoints = GraphCalculator().calculate(dawum!!)
+        logger.info("Done Fetching new JSON")
         result = ResultDto(surveyPoints,dawum!!.parties, dawum!!.taskers,dawum!!.institutes)
 
 
