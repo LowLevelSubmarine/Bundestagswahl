@@ -5,15 +5,17 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {HttpClient, HttpClientModule} from "@angular/common/http";
 import { PointGraphComponent } from './components/point-graph/point-graph.component';
-import {LineChartModule} from "@swimlane/ngx-charts";
+import {ChartCommonModule, LineChartModule, NgxChartsModule} from "@swimlane/ngx-charts";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {FormsModule} from "@angular/forms";
 import {DatePipe} from "@angular/common";
+import { LinearGraphComponent } from './components/linear-graph/linear-graph.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PointGraphComponent
+    PointGraphComponent,
+    LinearGraphComponent,
   ],
   imports: [
     BrowserModule,
@@ -21,7 +23,8 @@ import {DatePipe} from "@angular/common";
     AppRoutingModule,
     LineChartModule,
     BrowserAnimationsModule,
-    FormsModule
+    FormsModule,
+    ChartCommonModule,
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]

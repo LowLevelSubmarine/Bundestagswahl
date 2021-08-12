@@ -9,3 +9,11 @@ ngx-charts-line-chart {
   width: 100vw;
   height: 100vh;
 }
+
+:host ::ng-deep ngx-charts-line-chart  .legend-label-text {
+  color: black;
+}
+
+:host ::ng-deep .chart-legend .legend-label .active .legend-label-text {
+  color: gray;
+}

@@ -10,7 +10,7 @@ import {DatePipe} from "@angular/common";
 })
 export class AppComponent{
   title = 'frontend';
-  data: ChartElementDto[] | null = null
+  data: ChartElementDto[]  = []
   from = this.datePipe.transform(new Date().setDate(new Date().getDate() - 30), "yyyy-MM-dd")!
   to = this.datePipe.transform(new Date(), "yyyy-MM-dd")!
 
