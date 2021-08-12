@@ -1,6 +1,9 @@
 package de._2n1p.bundestagswahl.calc
 
 import de._2n1p.bundestagswahl.dto.Survey
+import de._2n1p.bundestagswahl.utils.Date.Companion.isBetween
+import de._2n1p.bundestagswahl.utils.Number.Companion.isBetween
+import de._2n1p.bundestagswahl.utils.Optional.Companion.orNull
 import java.lang.Long.max
 import java.lang.Long.min
 import java.time.LocalDate
@@ -8,7 +11,7 @@ import java.time.Period
 
 class CombinedSurvey(private val surveys: List<Survey>) {
 
-    val surveyByInstitute: Map<Long, List<Survey>>
+    val surveysByInstitute: Map<Long, List<Survey>>
 
     init {
         val map: MutableMap<Long, MutableList<Survey>> = mutableMapOf()
@@ -16,53 +19,50 @@ class CombinedSurvey(private val surveys: List<Survey>) {
             map.putIfAbsent(survey.instituteId, mutableListOf())
             map.get(survey.instituteId)?.add(survey)
         }
-        this.surveyByInstitute = map
+        this.surveysByInstitute = map
     }
 
     fun calcPartyAdjustments(date: LocalDate, range: Int): Map<Long, Map<Long, Float>> {
-        val averageByInstitute = mutableMapOf<Long, MutableMap<Long, Float>>()
+        val avgByInstituteAndParty = mutableMapOf<Long, MutableMap<Long, FloatAverage>>()
         val newestSurveyEpochDay = surveys.maxByOrNull { it.calcPeriodDate() }!!.calcPeriodDate().toEpochDay()
         val oldestSurveyEpochDay = surveys.minByOrNull { it.calcPeriodDate() }!!.calcPeriodDate().toEpochDay()
         val startDay = min(date.toEpochDay() - range, newestSurveyEpochDay)
         val endDay = max(date.toEpochDay() + range, oldestSurveyEpochDay)
-        val days = endDay - startDay
         for (i in startDay..endDay) {
             val currentDate = LocalDate.ofEpochDay(i)
-            for (entry in this.surveyByInstitute.entries) {
-                val result = getDate(currentDate, entry.value)
-                for (partyId in result.keys) {
-                    val partyScore = averageByInstitute.getOrPut(entry.key) { mutableMapOf() }
-                    partyScore[partyId] = partyScore.getOrDefault(partyId, 0F) + (result[partyId]!! / days)
+            for (surveysByInstituteEntry in this.surveysByInstitute.entries) {
+                val avgByParty = avgByInstituteAndParty.getOrPut(surveysByInstituteEntry.key){ mutableMapOf() }
+                val result = getDate(currentDate, range, surveysByInstituteEntry.value)
+                for (resultEntry in result.entries) {
+                    avgByParty.getOrPut(resultEntry.key){ FloatAverage() }.add(resultEntry.value)
                 }
             }
         }
-        val averageByParty = mutableMapOf<Long, Float>()
-        for (instituteEntry in averageByInstitute) {
-            for (partyEntry in instituteEntry.value) {
-                averageByParty[partyEntry.key] = averageByParty.getOrDefault(partyEntry.key, 0F) + partyEntry.value / averageByInstitute.size
+        val avgByParty = mutableMapOf<Long, FloatAverage>()
+        for (avgByInstituteAndPartyEntry in avgByInstituteAndParty) {
+            for (avgByPartyEntry in avgByInstituteAndPartyEntry.value) {
+                avgByParty.getOrPut(avgByPartyEntry.key){ FloatAverage() }.add(avgByPartyEntry.value.calc())
             }
         }
-        val adjustmentsByInstitute = mutableMapOf<Long, MutableMap<Long, Float>>()
-        for (instituteEntry in averageByInstitute) {
-            val adjustmentsByParty = mutableMapOf<Long, Float>()
-            for (partyEntry in instituteEntry.value) {
-                adjustmentsByParty[partyEntry.key] = partyEntry.value - averageByParty[partyEntry.key]!!
+        val adjByInstituteAndParty = mutableMapOf<Long, MutableMap<Long, Float>>()
+        for (adjByInstituteAndPartyEntry in avgByInstituteAndParty) {
+            val adjByParty = mutableMapOf<Long, Float>()
+            for (adjByPartyEntry in adjByInstituteAndPartyEntry.value) {
+                adjByParty[adjByPartyEntry.key] = avgByParty[adjByPartyEntry.key]!!.calc() - adjByPartyEntry.value.calc()
             }
-            adjustmentsByInstitute[instituteEntry.key] = adjustmentsByParty
+            adjByInstituteAndParty[adjByInstituteAndPartyEntry.key] = adjByParty
         }
-        return adjustmentsByInstitute
+        return adjByInstituteAndParty
     }
 
-    fun getDate(date: LocalDate, surveys: List<Survey>): Map<Long, Float> {
+    private fun getDate(date: LocalDate, range: Int, surveys: List<Survey>): Map<Long, Float> {
         for (survey in surveys) {
             if (survey.calcPeriodDate() == date) return survey.results
         }
-        val surveyNext = surveys.stream().filter { it.calcPeriodDate().isAfter(date) }.min(DayDistance(date)).orElse(null)
-        val surveyPrev = surveys.stream().filter { it.calcPeriodDate().isBefore(date) }.min(DayDistance(date)).orElse(null)
+        val surveyNext = surveys.stream().filter { it.calcPeriodDate().isBetween(date, date.plusDays(range.toLong())) }.min(DayDistance(date)).orNull()
+        val surveyPrev = surveys.stream().filter { it.calcPeriodDate().isBetween(date, date.minusDays(range.toLong())) }.min(DayDistance(date)).orNull()
         if (surveyNext == null || surveyPrev == null) {
-            if (surveyNext != null) return surveyNext.results
-            else if (surveyPrev != null) return surveyPrev.results
-            else return mapOf()
+            return mapOf()
         }
         return interpolateSurvey(surveyPrev, surveyNext, date)
     }
