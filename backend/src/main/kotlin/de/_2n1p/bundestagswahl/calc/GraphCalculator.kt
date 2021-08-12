@@ -15,7 +15,7 @@ class GraphCalculator {
 
         bundestagSurveys.forEach {
             val adjustmentValues = CombinedSurvey(bundestagSurveys.values.toList()).calcPartyAdjustments(it.value.date,30)
-            surveyPoints.add(SurveyPoint(it.value.date,calculatePartyAdjustedSurveys(adjustmentValues,it.value).results,it.value.instituteId,it.value.instituteId))
+            surveyPoints.add(SurveyPoint(it.value.date,calculatePartyAdjustedSurveys(adjustmentValues,it.value).results,it.value.instituteId,it.value.taskerId))
         }
 
         return surveyPoints

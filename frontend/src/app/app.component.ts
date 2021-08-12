@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import {ChangeDetectorRef, Component} from '@angular/core';
 import {ApiService} from "./api.service";
+import {ChartElementDto} from "./dto/chartElement.dto";
 
 @Component({
   selector: 'app-root',
@@ -8,8 +9,25 @@ import {ApiService} from "./api.service";
 })
 export class AppComponent {
   title = 'frontend';
+  data: ChartElementDto[] | null = null
+  from: any
+  to: any
 
-  constructor(apiService:ApiService) {
-    apiService.getData().subscribe((obs) => {console.log(obs)})
+
+  constructor(private apiService: ApiService, private changeDetection: ChangeDetectorRef) {
+    this.apiService.getChartData().subscribe((observer) => {
+
+      this.data = observer
+      changeDetection.detectChanges()
+    })
+  }
+
+
+  applyDates() {
+    console.log(this.from)
+    this.apiService.getChartData(new Date(this.from), new Date(this.to)).subscribe((observer) => {
+      this.data = observer
+      this.changeDetection.detectChanges()
+    })
   }
 }
