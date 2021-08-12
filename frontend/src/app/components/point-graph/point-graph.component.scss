@@ -2,4 +2,10 @@ ngx-charts-line-chart {
   -webkit-font-feature-settings: "lnum";
   -moz-font-feature-settings: "lnum";
   font-feature-settings: "lnum";
+  font-variant-numeric: tabular-nums;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
 }

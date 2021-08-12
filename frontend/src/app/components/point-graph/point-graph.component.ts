@@ -18,7 +18,6 @@ export class PointGraphComponent {
   @Input() xAxisLabel: string = '';
   @Input() yAxisLabel: string = '';
   timeline: boolean = true;
-  view : [number, number]= [800, 300];
 
 
   _data: ChartElementDto[] | null = null;
