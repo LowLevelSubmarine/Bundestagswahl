@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ApiService} from "./api.service";
 import {ChartElementDto} from "./dto/chartElement.dto";
 import {DatePipe} from "@angular/common";
@@ -8,7 +8,7 @@ import {DatePipe} from "@angular/common";
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent{
   title = 'frontend';
   data: ChartElementDto[] | null = null
   from = this.datePipe.transform(new Date().setDate(new Date().getDate() - 30), "yyyy-MM-dd")!
@@ -24,5 +24,6 @@ export class AppComponent {
       this.changeDetection.detectChanges()
     })
   }
+
 
 }
