@@ -1,6 +1,7 @@
 import {ChangeDetectorRef, Component} from '@angular/core';
 import {ApiService} from "./api.service";
 import {ChartElementDto} from "./dto/chartElement.dto";
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-root',
@@ -10,24 +11,18 @@ import {ChartElementDto} from "./dto/chartElement.dto";
 export class AppComponent {
   title = 'frontend';
   data: ChartElementDto[] | null = null
-  from: any
-  to: any
+  from = this.datePipe.transform(new Date().setDate(new Date().getDate() - 30), "yyyy-MM-dd")!
+  to = this.datePipe.transform(new Date(), "yyyy-MM-dd")!
 
-
-  constructor(private apiService: ApiService, private changeDetection: ChangeDetectorRef) {
-    this.apiService.getChartData().subscribe((observer) => {
-
-      this.data = observer
-      changeDetection.detectChanges()
-    })
+  constructor(private apiService: ApiService, private changeDetection: ChangeDetectorRef, private datePipe: DatePipe) {
+    this.applyDates()
   }
 
-
   applyDates() {
-    console.log(this.from)
     this.apiService.getChartData(new Date(this.from), new Date(this.to)).subscribe((observer) => {
       this.data = observer
       this.changeDetection.detectChanges()
     })
   }
+
 }

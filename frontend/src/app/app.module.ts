@@ -8,6 +8,7 @@ import { PointGraphComponent } from './components/point-graph/point-graph.compon
 import {LineChartModule} from "@swimlane/ngx-charts";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {FormsModule} from "@angular/forms";
+import {DatePipe} from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -22,7 +23,7 @@ import {FormsModule} from "@angular/forms";
     BrowserAnimationsModule,
     FormsModule
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
