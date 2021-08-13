@@ -8,4 +8,5 @@ export interface ChartElementValue {
   name: string,
   position: number,
   value: number
+  info: string | undefined
 }

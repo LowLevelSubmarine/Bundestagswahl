@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {environment} from "../environments/environment";
 import {ResultDto} from "./dto/result.dto";
 import {Observable} from "rxjs";
-import {ChartElementDto} from "./dto/chartElement.dto";
+import {ChartElementDto} from "./linear-graph/dto/chartElement.dto";
 import {PartyColors} from "./party-colors";
 import {DatePipe} from "@angular/common";
 
@@ -33,14 +33,14 @@ export class ApiService {
             let partyNum = Number(partyId)
             if (from && to && date >= from && date <= to || !from || !to) {
               if (parties.has(partyNum)) {
-                parties.get(partyNum)!.series.push({name: formattedDate,position: date.getTime(), value: value as number})
+                parties.get(partyNum)!.series.push({name: formattedDate,position: date.getTime(), value: value as number, info:"test"})
               } else {
                 let partyName = observable.parties[partyNum]!.shortcut
                 let partyColor = PartyColors.getColorByParty(partyNum)
                 parties.set(Number(partyId), {
                   name: partyName,
                   color: partyColor!,
-                  series: [{name: formattedDate, position: date.getTime(), value: value as number}]
+                  series: [{name: formattedDate, position: date.getTime(), value: value as number, info:"test"}]
                 })
               }
             }

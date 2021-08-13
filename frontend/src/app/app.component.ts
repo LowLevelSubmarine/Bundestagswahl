@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ApiService} from "./api.service";
-import {ChartElementDto} from "./dto/chartElement.dto";
+import {ChartElementDto} from "./linear-graph/dto/chartElement.dto";
 import {DatePipe} from "@angular/common";
 
 @Component({
