@@ -22,7 +22,7 @@ export class LinearGraphComponent implements OnInit {
   set data (elements: ChartElementDto[]) {
     this.buildGraph(elements)
   }
-  groups: {group:string, color: string,values:{position: number, x:any,y:any}[]}[] = []
+  groups: {group:string, color: string,values:{position: number, x:any,y:any, info:string | undefined}[]}[] = []
 
   constructor(private renderer: Renderer2, private changeDetection: ChangeDetectorRef) { }
 
@@ -32,7 +32,7 @@ export class LinearGraphComponent implements OnInit {
   buildGraph(elements: ChartElementDto[]) {
     let minValue = null
     let maxValue = null
-    let groups: {group:string, color: string,values:{position: number, x:any,y:any}[]}[] = []
+    let groups: {group:string, color: string,values:{position: number, info: string| undefined, x:any,y:any}[]}[] = []
     let names: string[] = []
 
     for (let element of elements) {
@@ -60,9 +60,9 @@ export class LinearGraphComponent implements OnInit {
       for (let serie of element.series) {
         let pos = (serie.position - minValue) / (maxValue - minValue)
         if (groups.filter((it) => it.group == element.name).length == 0) {
-          groups.push({group:element.name,color: element.color,values:[{position:pos, x: serie.name, y: serie.value}]})
+          groups.push({group:element.name,color: element.color,values:[{position:pos, x: serie.name, y: serie.value, info: serie.info}]})
         } else {
-            groups.filter((it) => it.group == element.name)[0].values.push({position:pos, x: serie.name, y: serie.value})
+            groups.filter((it) => it.group == element.name)[0].values.push({position:pos, x: serie.name, y: serie.value, info: serie.info})
         }
       }
     }
@@ -79,22 +79,46 @@ export class LinearGraphComponent implements OnInit {
 
 
     for (let groupIndex in groups) {
-      for (let point of groups[groupIndex].values) {
+      groups[groupIndex].values.forEach( (point, index) => {
         if (!dates.includes(point.x)) {
           dates.push(point.x)
         }
 
-        svg.append("circle")
-        .attr("cx",String(point.position * xMultiplier)+xOffset)
+        const x = (point.position * xMultiplier)+xOffset
+        const y = 100-(point.y * yMultiplier)
+
+
+        let circle = svg.append("circle")
+        .attr("cx",String(x))
         .attr("r","4")
-        .attr("cy",100-(point.y * yMultiplier))
+        .attr("cy",y)
         .attr("fill",groups[groupIndex].color)
-      }
 
+        if (point.info) {
+            circle.on("mouseover",(event) => {
+              this.onMouseOverElement(event,point)
+            })
+        }
+
+        if (index+1 < groups[groupIndex].values.length) {
+          const nextX = (groups[groupIndex].values[index+1].position * xMultiplier)+xOffset
+          const nextY = 100-(groups[groupIndex].values[index+1].y * yMultiplier)
+
+          svg.append("line")
+            .attr("x1",String(x))
+            .attr("y1",String(y))
+            .attr("x2", String(nextX))
+            .attr("y2", String(nextY))
+            .attr("style",`stroke:${groups[groupIndex].color};`)
+        }
+      })
     }
-    console.log(dates.length)
+  }
 
-    console.log(groups)
+  onMouseOverElement(event: any,point: {position: number, info: string| undefined, x:any,y:any}) {
+    console.log("LOL")
+    console.log(event)
+    console.log(point)
   }
 
 }
