@@ -1,0 +1,30 @@
+<div id="svgContainer" >
+  <svg width="1000" height="500">
+    <!-- Data grid  Y-->
+
+    <g *ngFor="let marker of yMarker">
+      <line [attr.x1]="0" [attr.y1]="getYScala(marker)" [attr.x2]="xMaxValue* xMultiplier" [attr.y2]="getYScala(marker)" [attr.style]="'stroke:grey; opacity:0.5;'"></line>
+    </g>
+
+    <g *ngFor="let marker of uniPos">
+      <line [attr.x1]="(marker*xMultiplier)+xOffset" [attr.y1]="0" [attr.x2]="(marker*xMultiplier)+xOffset" [attr.y2]="(yMaxValue* yMultiplier)+20" [attr.style]="'stroke:grey; opacity:0.5;'"></line>
+    </g>
+
+    <g *ngFor="let group of groups">
+      <g *ngFor="let point of group.values">
+        <g *ngIf="(point.index < group.values.length-1)">
+          <line appLine   [attr.x1]="getX(point)" [attr.y1]="getY(point)"
+                [attr.x2]="getX(group.values[point.index+1])" [attr.y2]="getY(group.values[point.index+1])" [attr.stroke-width]="circleStroke" [attr.style]="getStrokeColor(group)"></line>
+        </g>
+      </g>
+    </g>
+
+    <!-- Data Points -->
+    <g *ngFor="let group of groups">
+      <g *ngFor="let point of group.values">
+        <circle appCircle [attr.cx]="getX(point)" [attr.cy]="getY(point)" [attr.r]="circleRadius" [attr.fill]="'white'"
+                [attr.stroke]="group.color" [attr.stroke-width]="circleStroke"></circle>
+      </g>
+    </g>
+  </svg>
+</div>

@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {environment} from "../environments/environment";
 import {ResultDto} from "./dto/result.dto";
 import {Observable} from "rxjs";
-import {ChartElementDto} from "./dto/chartElement.dto";
+import {ChartElementDto} from "./linear-graph/dto/chartElement.dto";
 import {PartyColors} from "./party-colors";
 import {DatePipe} from "@angular/common";
 
