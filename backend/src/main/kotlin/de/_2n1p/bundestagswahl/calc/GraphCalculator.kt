@@ -3,6 +3,10 @@ package de._2n1p.bundestagswahl.calc
 import de._2n1p.bundestagswahl.data.Dawum
 import de._2n1p.bundestagswahl.dto.Survey
 import de._2n1p.bundestagswahl.dto.SurveyPoint
+import de._2n1p.bundestagswahl.utils.Stream.Companion.max
+import de._2n1p.bundestagswahl.utils.Stream.Companion.min
+import java.time.LocalDate
+import java.util.*
 
 class GraphCalculator {
 
@@ -13,9 +17,27 @@ class GraphCalculator {
 
         val surveyPoints: MutableList<SurveyPoint> = mutableListOf()
 
-        bundestagSurveys.forEach {
-            val adjustmentValues = CombinedSurvey(bundestagSurveys.values.toList()).calcPartyAdjustments(it.value.date,30)
-            surveyPoints.add(SurveyPoint(it.value.date,calculatePartyAdjustedSurveys(adjustmentValues,it.value).results,it.value.instituteId,it.value.taskerId))
+        val minDay = bundestagSurveys.values.stream().min { it -> it.calcPeriodDate() }.get().date.toEpochDay()
+        val maxDay = bundestagSurveys.values.stream().max { it -> it.calcPeriodDate() }.get().date.toEpochDay()
+        for (i in minDay..maxDay+1) {
+            val currDay = LocalDate.ofEpochDay(i)
+            val map = mutableMapOf<Long, FloatAverage>()
+            val adjustmentValues = CombinedSurvey(bundestagSurveys.values.toList()).calcPartyAdjustments(currDay,60)
+            val currSurveys = mutableListOf<Survey>()
+            bundestagSurveys.filter { it.value.calcPeriodDate() == currDay }.forEach { surveyEntry ->
+                val adjustedResult = surveyEntry.value.results.mapValues {
+                    val adjustmentValue = adjustmentValues[surveyEntry.value.instituteId]?.get(it.key)
+                    if (adjustmentValue != null) it.value + adjustmentValue else it.value
+                }
+                adjustedResult.forEach { map.getOrPut(it.key) { FloatAverage() }.add(it.value) }
+                currSurveys.add(surveyEntry.value)
+            }
+            if (currSurveys.isNotEmpty()) {
+                surveyPoints.add(SurveyPoint(currDay, map.mapValues { it.value.calc() }, currSurveys.first().instituteId, currSurveys.first().taskerId))
+            }
+            /*if (adjustmentValues.containsKey(13L)) {
+                surveyPoints.add(SurveyPoint(currDay, adjustmentValues.get(13L)!!, 0L, 0L))
+            }*/
         }
 
         return surveyPoints

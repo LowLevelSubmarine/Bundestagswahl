@@ -26,4 +26,12 @@ class FloatAverage : Average<Float> {
         return this.cache!!
     }
 
+    companion object {
+
+        fun <K, V : Number> Map<K, Average<V>>.calcAverages(): Map<K, V> {
+            return this.mapValues { it.value.calc() }
+        }
+
+    }
+
 }

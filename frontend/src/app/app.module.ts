@@ -9,13 +9,11 @@ import {ChartCommonModule, LineChartModule, NgxChartsModule} from "@swimlane/ngx
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {FormsModule} from "@angular/forms";
 import {DatePipe} from "@angular/common";
-import { LinearGraphComponent } from './components/linear-graph/linear-graph.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PointGraphComponent,
-    LinearGraphComponent,
   ],
   imports: [
     BrowserModule,

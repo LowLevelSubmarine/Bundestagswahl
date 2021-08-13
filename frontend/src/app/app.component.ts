@@ -11,7 +11,7 @@ import {DatePipe} from "@angular/common";
 export class AppComponent{
   title = 'frontend';
   data: ChartElementDto[]  = []
-  from = this.datePipe.transform(new Date().setDate(new Date().getDate() - 30), "yyyy-MM-dd")!
+  from = this.datePipe.transform(new Date().setDate(new Date().getDate() - 90), "yyyy-MM-dd")!
   to = this.datePipe.transform(new Date(), "yyyy-MM-dd")!
 
   constructor(private apiService: ApiService, private changeDetection: ChangeDetectorRef, private datePipe: DatePipe) {

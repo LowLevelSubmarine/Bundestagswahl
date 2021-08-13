@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ColorHelper, ScaleType} from "@swimlane/ngx-charts";
 import {ChartElementDto} from "../../dto/chartElement.dto";
+import {curveBasis, curveBundle, curveCardinal, curveNatural, curveStep} from "d3";
 
 @Component({
   selector: 'app-point-graph',
