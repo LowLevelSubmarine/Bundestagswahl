@@ -12,6 +12,7 @@ import {DatePipe} from "@angular/common";
 import {LinearGraphModule} from "./linear-graph/linear-graph.module";
 import {GraphPartySelectorComponent} from "./components/graph-party-selector/graph-party-selector.component";
 import { SectionComponent } from './components/section/section.component';
+import { ParliamentCompositionComponent } from './components/parliament-composition/parliament-composition.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { SectionComponent } from './components/section/section.component';
     GraphPartySelectorComponent,
     SectionComponent,
     SectionComponent,
+    ParliamentCompositionComponent,
   ],
   imports: [
     BrowserModule,

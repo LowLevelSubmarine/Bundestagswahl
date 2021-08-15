@@ -9,10 +9,14 @@
 </app-section>
 <app-section title="Trend" id="section-trend">
   <div class="divider">
-    <app-point-graph
+    <app-linear-graph
+      [data]="data"
+    >
+    </app-linear-graph>
+    <!--<app-point-graph
       [data]="data"
       [xAxisLabel]="'Datum'"
-      [yAxisLabel]="'Prozent'"></app-point-graph>
+      [yAxisLabel]="'Prozent'"></app-point-graph>->-->
     <app-graph-party-selector
       [parties]="[
         {shortcut:'Grüne', name:'Bündnis 90, Die Grünen', id: 0, color:'#4C9849'},
@@ -24,5 +28,10 @@
   <input type="date" id="from" name="from" [(ngModel)]="from">
   <input type="date" id="to" name="to" [(ngModel)]="to">
   <button (click)="applyDates()">Search</button>
+</app-section>
+<app-section title="Sitzverteilung">
+  <app-parliament-composition
+    [elements]="[{color:'#4C9849', size:13.4*0.01},{color:'#232323', size:11.4*0.01},{color:'#E51D1D', size:16.4*0.01},{color:'#E5DE1D', size:33*0.01},{color:'#1D9AE5', size:9.4*0.01}]"
+  ></app-parliament-composition>
 </app-section>
 
