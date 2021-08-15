@@ -29,9 +29,11 @@
   <input type="date" id="to" name="to" [(ngModel)]="to">
   <button (click)="applyDates()">Search</button>
 </app-section>
-<app-section title="Sitzverteilung">
-  <app-parliament-composition
-    [elements]="[{color:'#4C9849', seats:41},{color:'#232323', seats:34},{color:'#E51D1D', seats:77},{color:'#E5DE1D', seats:54},{color:'#1D9AE5', seats:24}]"
-  ></app-parliament-composition>
+<app-section title="Sitzverteilung" id="section-parliament-composition">
+  <div class="divider">
+    <app-parliament-composition
+      [elements]="[{color:'#4C9849', seats:41},{color:'#232323', seats:34},{color:'#E51D1D', seats:77},{color:'#E5DE1D', seats:54},{color:'#1D9AE5', seats:24}]"
+    ></app-parliament-composition>
+  </div>
 </app-section>
 
