@@ -33,14 +33,14 @@ export class ApiService {
             let partyNum = Number(partyId)
             if (from && to && date >= from && date <= to || !from || !to) {
               if (parties.has(partyNum)) {
-                parties.get(partyNum)!.series.push({name: formattedDate,position: date.getTime(), value: value as number, info:"test"})
+                parties.get(partyNum)!.series.push({name: formattedDate,position: date.getTime(), value: value as number, info: new Map([["test1","test"]])})
               } else {
                 let partyName = observable.parties[partyNum]!.shortcut
                 let partyColor = PartyColors.getColorByParty(partyNum)
                 parties.set(Number(partyId), {
                   name: partyName,
                   color: partyColor!,
-                  series: [{name: formattedDate, position: date.getTime(), value: value as number, info:"test"}]
+                  series: [{name: formattedDate, position: date.getTime(), value: value as number, info: new Map([["test1","test"]])}]
                 })
               }
             }

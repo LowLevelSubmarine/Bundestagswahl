@@ -9,6 +9,9 @@ import {
   ViewChildren
 } from '@angular/core';
 import {ChartElementDto} from "../../dto/chartElement.dto";
+import {InfoBubbleDto} from "./InfoBubbleDto";
+import {GroupDto, GroupValueDto} from "./group-dto";
+import {OnLineDto} from "../../directives/line.directive";
 @Component({
   selector: 'app-linear-graph',
   templateUrl: './linear-graph.component.html',
@@ -21,7 +24,7 @@ export class LinearGraphComponent implements OnInit {
     this.buildGraph(elements)
   }
   uniPos: number[] = []
-  groups: {group:string, color: string,values:{position: number, x:any,y:any, info:string | undefined,index: number}[]}[] = []
+  groups: GroupDto[] = []
   xMultiplier = 500
   yMultiplier = 7
   xOffset = 10
@@ -32,8 +35,22 @@ export class LinearGraphComponent implements OnInit {
   yMarker: number[] = [0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100]
   yMarkerUnit = "%"
   yMaxValue = 100
-
   xMaxValue = 20
+
+  /* string: Name of group| undefined: gidden*/
+  gradient:string| undefined
+
+  bubbleX =0
+  bubbleY =0
+  bubbleOpen = false
+  bubbleWidth = 150
+  bubbleHeight = 50
+  noseWidth = 16
+  bubblePaddingSide = 5
+  bubblePaddingTopBottom = 19
+  bubbleInfo: Map<string, string> = new Map<string, string>();
+
+
 
   constructor(private renderer: Renderer2, private changeDetection: ChangeDetectorRef) { }
 
@@ -43,7 +60,7 @@ export class LinearGraphComponent implements OnInit {
   buildGraph(elements: ChartElementDto[]) {
     let minValue = null
     let maxValue = null
-    let groups: {group:string, color: string,values:{position: number, info: string| undefined, x:any,y:any, index: number}[]}[] = []
+    let groups: GroupDto[] = []
     let names: string[] = []
 
     for (let element of elements) {
@@ -68,9 +85,9 @@ export class LinearGraphComponent implements OnInit {
 
 
     let maxYValue = 0
+    this.uniPos = []
 
     for (let element of elements) {
-      let index = 0
       for (let serie of element.series) {
         let pos = (serie.position - minValue) / (maxValue - minValue)
         if (serie.value > maxYValue)  {
@@ -81,24 +98,24 @@ export class LinearGraphComponent implements OnInit {
         }
 
         if (groups.filter((it) => it.group == element.name).length == 0) {
-          groups.push({group:element.name,color: element.color,values:[{position:pos, x: serie.name, y: serie.value, info: serie.info, index:index}]})
+          groups.push({group:element.name,color: element.color,values:[{position:pos, x: serie.name, y: serie.value, info: serie.info}]})
         } else {
-            groups.filter((it) => it.group == element.name)[0].values.push({position:pos, x: serie.name, y: serie.value, info: serie.info, index:index})
+            groups.filter((it) => it.group == element.name)[0].values.push({position:pos, x: serie.name, y: serie.value, info: serie.info})
         }
-        index++
       }
     }
 
     this.yMaxValue = maxYValue
     console.log(this.yMaxValue)
+    console.log((this.yMaxValue * this.yMultiplier))
     this.groups = groups
   }
 
-  getX(point: any) {
+  getX(point: GroupValueDto) {
     return (point.position * this.xMultiplier)+this.xOffset
   }
 
-  getY(point:any) {
+  getY(point:GroupValueDto) {
     return (this.svgHeight-(point.y * this.yMultiplier)) -(this.yMaxValue* this.yMultiplier)
   }
 
@@ -109,4 +126,76 @@ export class LinearGraphComponent implements OnInit {
   getYScala(marker: number) {
     return (this.svgHeight-(marker * this.yMultiplier)) -(this.yMaxValue* this.yMultiplier)
   }
+
+  // GRADIENT
+
+  onLine($event: OnLineDto) {
+    this.showGradient($event.groupname)
+  }
+
+  showGradient(name: string) {
+    this.gradient = name
+  }
+
+  hideGradient() {
+    this.gradient = undefined
+  }
+
+  getColorByGroup(name: string) {
+    return this.groups.filter(it => it.group == name)[0].color
+  }
+
+
+  getGradientPointsForGroup(name: string) {
+      let result = ""
+      let group = this.groups.filter(it => it.group == name)[0]
+      for (let point of group.values) {
+        result += `${this.getX(point)},${this.getY(point)} `
+      }
+    result += `${this.getX(group.values[group.values.length-1])},${(this.svgHeight) -(this.yMaxValue* this.yMultiplier)} `
+    result += `${this.getX(group.values[0])},${(this.svgHeight) -(this.yMaxValue* this.yMultiplier)} `
+    return result
+  }
+
+
+  // BUBBLE
+
+  openBubble($event: InfoBubbleDto ) {
+    console.log($event)
+    this.gradient = $event.groupname
+
+    if (!this.bubbleOpen) {
+      this.bubbleX = $event.x - (this.bubbleWidth/2)
+      this.bubbleY =  $event.y - this.bubbleHeight - (this.noseWidth/2)
+      this.bubbleOpen = true
+      this.bubbleInfo = $event.info
+    }
+  }
+
+  closeBubble() {
+    this.gradient = undefined
+
+    this.bubbleOpen = false
+  }
+
+  getBubbleTrianglepoints(): string {
+    let result = ""
+    result += `${this.bubbleX+(this.bubbleWidth/2) - (this.noseWidth/2)},${this.bubbleY+ this.bubbleHeight-0.2} `
+    result += `${this.bubbleX+(this.bubbleWidth/2) + (this.noseWidth/2)},${this.bubbleY+ this.bubbleHeight-0.2} `
+    result += `${this.bubbleX+(this.bubbleWidth/2)},${this.bubbleY+this.bubbleHeight+(this.noseWidth/2)} `
+    return  result
+  }
+
+  getEntries(): [string, string][] {
+    return Array.from(this.bubbleInfo.entries());
+  }
+
+  getBubbleCaptionTextX() {
+    return this.bubbleX +(this.bubbleWidth/2)
+  }
+
+  getBubbleCaptionTextY() {
+    return this.bubbleY +this.bubblePaddingTopBottom
+  }
+
 }
