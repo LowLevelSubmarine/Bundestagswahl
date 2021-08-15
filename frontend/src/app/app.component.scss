@@ -1,0 +1,42 @@
+:host {
+  background-color: rgba(0, 0, 0, 0.04);
+  width: 100%;
+  display: block;
+  padding: 3em 20vw;
+  box-sizing: border-box;
+}
+
+header {
+  text-align: right;
+  p {
+    color: #111111;
+    font-size: 1.2em;
+  }
+}
+
+app-section {
+  margin: 3em 0;
+}
+
+#section-trend .divider {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+}
+
+#section-trend app-point-graph {
+  height: 25em;
+}
+
+#section-parliament-composition {
+
+  .divider {
+    height: 25em;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+
+    app-parliament-composition {
+      align-self: center;
+    }
+  }
+}

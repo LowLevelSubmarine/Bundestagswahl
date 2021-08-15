@@ -1,8 +1,8 @@
 package de._2n1p.bundestagswahl.service
 
 import de._2n1p.bundestagswahl.calc.GraphCalculator
-import de._2n1p.bundestagswahl.data.Dawum
-import de._2n1p.bundestagswahl.dto.ResultDto
+import de._2n1p.bundestagswahl.dawum_dto.Dawum
+import de._2n1p.bundestagswahl.dawum_dto.ResultDto
 import de._2n1p.bundestagswahl.requests.DawumDbRequest
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -51,5 +51,5 @@ class ParserService(val httpClientService: HttpClientService) {
 }
 
 interface DawumListener {
-    fun getDawum(dawum:Dawum)
+    fun getDawum(dawum: Dawum)
 }

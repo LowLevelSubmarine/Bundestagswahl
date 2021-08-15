@@ -1,12 +1,11 @@
 package de._2n1p.bundestagswahl.calc
 
-import de._2n1p.bundestagswahl.data.Dawum
-import de._2n1p.bundestagswahl.dto.Survey
-import de._2n1p.bundestagswahl.dto.SurveyPoint
+import de._2n1p.bundestagswahl.dawum_dto.Dawum
+import de._2n1p.bundestagswahl.dawum_dto.Survey
+import de._2n1p.bundestagswahl.dawum_dto.SurveyPoint
 import de._2n1p.bundestagswahl.utils.Stream.Companion.max
 import de._2n1p.bundestagswahl.utils.Stream.Companion.min
 import java.time.LocalDate
-import java.util.*
 
 class GraphCalculator {
 
@@ -22,7 +21,7 @@ class GraphCalculator {
         for (i in minDay..maxDay+1) {
             val currDay = LocalDate.ofEpochDay(i)
             val map = mutableMapOf<Long, FloatAverage>()
-            val adjustmentValues = CombinedSurvey(bundestagSurveys.values.toList()).calcPartyAdjustments(currDay,30)
+            val adjustmentValues = CombinedSurvey(bundestagSurveys.values.toList()).calcPartyAdjustments(currDay, 30)
             val currSurveys = mutableListOf<Survey>()
             bundestagSurveys.filter { it.value.calcPeriodDate() == currDay }.forEach { surveyEntry ->
                 val adjustedResult = surveyEntry.value.results.mapValues {

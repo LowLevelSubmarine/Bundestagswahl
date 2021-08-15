@@ -1,5 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;600;700&family=Playfair+Display:wght@700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+}
 
 html {
-  font-family: 'Lato', sans-serif;
+  font-family: 'Jost', sans-serif;
+}
+
+h1, h2 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 500;
+  color: #303030;
+}
+
+h1 {
+  font-size: 5em;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 3em;
+  font-weight: 700;
+}
+
+h3 {
+  font-weight: 600;
 }
