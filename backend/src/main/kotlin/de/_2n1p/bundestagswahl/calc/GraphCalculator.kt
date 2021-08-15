@@ -22,7 +22,7 @@ class GraphCalculator {
         for (i in minDay..maxDay+1) {
             val currDay = LocalDate.ofEpochDay(i)
             val map = mutableMapOf<Long, FloatAverage>()
-            val adjustmentValues = CombinedSurvey(bundestagSurveys.values.toList()).calcPartyAdjustments(currDay,60)
+            val adjustmentValues = CombinedSurvey(bundestagSurveys.values.toList()).calcPartyAdjustments(currDay, 30)
             val currSurveys = mutableListOf<Survey>()
             bundestagSurveys.filter { it.value.calcPeriodDate() == currDay }.forEach { surveyEntry ->
                 val adjustedResult = surveyEntry.value.results.mapValues {
