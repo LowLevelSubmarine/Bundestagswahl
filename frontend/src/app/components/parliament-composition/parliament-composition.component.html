@@ -1,0 +1,18 @@
+<svg viewBox="0 0 100 100">
+  <mask id="seatArea">
+    <circle cx="50" cy="50" [attr.r]="50-seatAreaWidth/2" [attr.stroke-width]="seatAreaWidth" fill="black" stroke="white"></circle>
+    <polygon points="0,100 50,50 100,100" fill="black"></polygon>
+  </mask>
+  <g mask="url(#seatArea)">
+    <polygon *ngFor="let element of elements; index as i" [attr.points]="indexToCoordinates(i)" [attr.fill]="element.color"></polygon>-->
+  </g>
+  <g>
+    <text *ngFor="let element of (showLabels? elements : []); index as i"
+          text-anchor="middle" alignment-baseline="central"
+          [attr.x]="indexToCoordinate(i, 50-seatAreaWidth/2)[0]"
+          [attr.y]="indexToCoordinate(i, 50-seatAreaWidth/2 )[1]"
+          font-weight="600" font-size="0.5em" fill="white">
+      {{Math.round(element.size*10)/10}}
+    </text>
+  </g>
+</svg>
