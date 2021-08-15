@@ -14,20 +14,24 @@ export class ParliamentCompositionComponent {
 
   indexToCoordinates(index: number) {
     let start = 0;
-    for (let i = 0; i < index; i++) {
-      start += this.elements[i].size
+    let max = 0
+    for (let i = 0; i < this.elements.length; i++) {
+      if (i < index) start += this.elements[i].seats
+      max += this.elements[i].seats
     }
-    const end = start + this.elements[index].size;
-    return this.angleToCoordinate(start, 200) + " 50,50 " + this.angleToCoordinate(end, 200)
+    const end = start + this.elements[index].seats;
+    return this.angleToCoordinate(start / max, 200) + " 50,50 " + this.angleToCoordinate(end / max, 200)
   }
 
   indexToCoordinate(index: number, distance: number) {
     let pos = 0;
-    for (let i = 0; i < index; i++) {
-      pos += this.elements[i].size
+    let max = 0
+    for (let i = 0; i < this.elements.length; i++) {
+      if (i < index) pos += this.elements[i].seats
+      max += this.elements[i].seats
     }
-    pos += this.elements[index].size / 2;
-    return this.angleToCoordinate(pos, distance)
+    pos += this.elements[index].seats / 2;
+    return this.angleToCoordinate(pos / max, distance)
   }
 
   angleToCoordinate(angle: number, distance: number): number[] {
@@ -43,5 +47,5 @@ export class ParliamentCompositionComponent {
 
 export interface ParliamentCompositionElement {
   color: string
-  size: number
+  seats: number
 }
