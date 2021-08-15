@@ -1,11 +1,28 @@
 <!--<app-linear-graph [data]="data"></app-linear-graph>-->
-<app-point-graph
-  [data]="data"
-  [xAxisLabel]="'Datum'"
-  [yAxisLabel]="'Prozent'"></app-point-graph>
-
-<input type="date" id="from" name="from" [(ngModel)]="from">
-<input type="date" id="to" name="to" [(ngModel)]="to">
-<button (click)="applyDates()">Search</button>
-
+<header>
+  <h1>Bundestagswahl 2021</h1>
+  <p>Trendbeobachtung durch Kombination verschiedener Umfrageinstitute</p>
+</header>
+<app-section title="Heute">
+  <h3>Neue Forsa Studie</h3>
+  <p>Grüne +2,8%</p>
+</app-section>
+<app-section title="Trend" id="section-trend">
+  <div class="divider">
+    <app-point-graph
+      [data]="data"
+      [xAxisLabel]="'Datum'"
+      [yAxisLabel]="'Prozent'"></app-point-graph>
+    <app-graph-party-selector
+      [parties]="[
+        {shortcut:'Grüne', name:'Bündnis 90, Die Grünen', id: 0, color:'#4C9849'},
+        {shortcut:'CDU/CSU', name:'Christlich Demokratische Union / Christlich Soziale Union', id: 1, color:'#232323'},
+        {shortcut:'SPD', name:'Sozialistische Partei Deutschland', id: 2, color:'#E51D1D'}
+      ]"
+    ></app-graph-party-selector>
+  </div>
+  <input type="date" id="from" name="from" [(ngModel)]="from">
+  <input type="date" id="to" name="to" [(ngModel)]="to">
+  <button (click)="applyDates()">Search</button>
+</app-section>
 

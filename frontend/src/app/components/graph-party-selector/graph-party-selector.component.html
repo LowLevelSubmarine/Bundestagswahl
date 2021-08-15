@@ -1,0 +1,14 @@
+<form [formGroup]="form">
+  <div *ngFor="let party of this.parties">
+    <input
+      type="radio"
+      formControlName="party"
+      [value]="party.id"
+      [id]="party.id"
+      (change)="this.onChange(party)">
+    <label [for]="party.id">
+      <div class="party-circle" [attr.style]="'background-color: ' + party.color + ';'"></div>
+      {{party.shortcut}}
+    </label>
+  </div>
+</form>

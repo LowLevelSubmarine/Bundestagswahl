@@ -1,0 +1,44 @@
+li {
+  padding: 0.5em;
+}
+
+[type=radio] {
+  display: none;
+}
+
+form {
+  width: max-content;
+}
+
+[type=radio]:checked ~ label {
+  background-color: rgba(0, 0, 0, 0.04);
+  font-weight: 600;
+}
+
+[type=radio]:checked ~ label .party-circle {
+  transform: scale(0.8);
+}
+
+label {
+  user-select: none;
+  display: flex;
+  padding: 0.2em 0.5em;
+  box-sizing: border-box;
+  margin-top: 0.1em;
+  border-radius: 0.5em;
+  background-color: rgba(0, 0, 0, 0);
+  width: 100%;
+  cursor: pointer;
+}
+
+.party-circle {
+  border-radius: 15px;
+  height: 0.8em;
+  width: 0.8em;
+  background-color: red;
+  display: inline-block;
+  transform: scale(0.5);
+  transition-duration: 0.3s;
+  align-self: center;
+  margin-right: 0.4em;
+}
