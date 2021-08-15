@@ -1,7 +1,7 @@
 export class PartyColors{
   static partyColors: Map<number,string> = new Map([
     [1,"#1A1A1A"],
-    [2,"#9E2A2AFF"],
+    [2,"#9E2A2A"],
     [3,"#E3D025"],
     [4,"#2E942A"],
     [5,"#ff0000"],
