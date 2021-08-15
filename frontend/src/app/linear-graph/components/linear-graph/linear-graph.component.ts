@@ -12,10 +12,19 @@ import {ChartElementDto} from "../../dto/chartElement.dto";
 import {InfoBubbleDto} from "./InfoBubbleDto";
 import {GroupDto, GroupValueDto} from "./group-dto";
 import {OnLineDto} from "../../directives/line.directive";
+import {animate, state, style, transition, trigger} from "@angular/animations";
 @Component({
   selector: 'app-linear-graph',
   templateUrl: './linear-graph.component.html',
-  styleUrls: ['./linear-graph.component.scss']
+  styleUrls: ['./linear-graph.component.scss'],
+  animations: [
+    trigger('gradientAnim', [
+      state('void', style({
+        opacity: 0
+      })),
+      transition('void<=>*', animate('150ms')),
+    ]),
+  ]
 })
 export class LinearGraphComponent implements OnInit {
 

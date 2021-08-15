@@ -14,11 +14,11 @@
 
     <!-- Gradients -->
 
-    <g *ngIf="gradient">
+    <g *ngIf="gradient" [@gradientAnim]>
       <defs>
         <linearGradient id="partyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" [attr.stop-color]="getColorByGroup(this.gradient)+'AA'"/>
-          <stop offset="100%" [attr.stop-color]="getColorByGroup(this.gradient)+'00'"/>
+          <stop offset="0%" [attr.stop-color]="getColorByGroup(this.gradient!)+'AA'"/>
+          <stop offset="100%" [attr.stop-color]="getColorByGroup(this.gradient!)+'00'"/>
         </linearGradient>
       </defs>
       <polygon [attr.points]="getGradientPointsForGroup(this.gradient)" fill="url(#partyGradient)"></polygon>
