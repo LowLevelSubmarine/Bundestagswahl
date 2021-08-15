@@ -1,4 +1,4 @@
-package de._2n1p.bundestagswahl.dto
+package de._2n1p.bundestagswahl.dawum_dto
 
 import java.time.LocalDate
 

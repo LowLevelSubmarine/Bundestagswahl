@@ -1,7 +1,6 @@
-package de._2n1p.bundestagswahl.data
+package de._2n1p.bundestagswahl.dawum_dto
 
 import com.google.gson.JsonParser
-import de._2n1p.bundestagswahl.dto.*
 
 class Dawum(json: String) {
 
