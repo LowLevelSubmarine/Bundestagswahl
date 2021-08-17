@@ -29,7 +29,7 @@ jobs:
     - name: Set jarFile
       run: echo "JARFILE=$(ls ./backend/build/libs/*.jar| head -1)" >> $GITHUB_ENV
     - name: debug
-      run: echo "env.$VERSION env.$JARFILE"
+      run: echo "env.$RELEASE_VERSION env.$JARFILE"
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -42,7 +42,7 @@ jobs:
         draft: false
         prerelease: true
     - name: Generate Backend Name
-      run: echo "NAME_BACKEND=$(echo bundestagswahl-backend-$VERSION.jar)" >> $GITHUB_ENV
+      run: echo "NAME_BACKEND=$(echo bundestagswahl-backend-$RELEASE_VERSION.jar)" >> $GITHUB_ENV
     - name: Upload Backend Jar
       id: upload-backend-jar
       uses: actions/upload-release-asset@v1
@@ -54,7 +54,7 @@ jobs:
         asset_name: ${{ env.NAME_BACKEND }}
         asset_content_type: application/java-archive
     - name: Generate Frontend Name
-      run: echo "NAME_FRONTEND=$(echo bundestagswahl-backend-$VERSION.jar)" >> $GITHUB_ENV
+      run: echo "NAME_FRONTEND=$(echo bundestagswahl-frontend-$RELEASE_VERSION.jar)" >> $GITHUB_ENV
     - name: Upload Frontend Zip
       id: upload-frontend-zip
       uses: actions/upload-release-asset@v1
