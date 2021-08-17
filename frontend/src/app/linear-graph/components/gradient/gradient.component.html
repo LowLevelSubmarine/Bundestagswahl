@@ -1,0 +1,9 @@
+<svg:g *ngIf="gradient" [@gradientAnim]>
+  <svg:defs>
+    <svg:linearGradient id="partyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <svg:stop offset="0%" [attr.stop-color]="getColorByGroup(this.gradient!)+'AA'"/>
+      <svg:stop offset="100%" [attr.stop-color]="getColorByGroup(this.gradient!)+'00'"/>
+    </svg:linearGradient>
+  </svg:defs>
+  <svg:polygon [attr.points]="getGradientPointsForGroup(this.gradient)" fill="url(#partyGradient)"></svg:polygon>
+</svg:g>

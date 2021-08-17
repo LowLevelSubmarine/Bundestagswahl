@@ -1,5 +1,6 @@
 import {Directive, EventEmitter, HostListener, Input, Output} from '@angular/core';
-import {InfoBubbleDto} from "../components/linear-graph/InfoBubbleDto";
+import {InfoBubbleDto} from "../dto/InfoBubbleDto";
+import {GradientComponent} from "../components/gradient/gradient.component";
 export interface OnLineDto{
   groupname: string
 }
@@ -12,16 +13,22 @@ export interface OnLineDto{
 export class LineDirective {
 
   @Input() groupname: string =""
-  @Output() onMouseOver:EventEmitter<OnLineDto> =new EventEmitter<OnLineDto>();
-  @Output() onMouseOut:EventEmitter<never> =new EventEmitter<never>();
+  @Input() gradient!: GradientComponent
 
   @HostListener("mouseenter") onMouseEnter() {
-
-    this.onMouseOver.emit({groupname: this.groupname})
+    this.gradient.showGradient(this.groupname)
   }
 
   @HostListener("mouseleave") onMouseLeave() {
-    this.onMouseOut.emit()
+    this.gradient.hideGradient()
+  }
+
+  @HostListener("click") click() {
+    if (this.gradient.gradient == undefined) {
+      this.gradient.showGradient(this.groupname)
+    } else {
+      this.gradient.hideGradient()
+    }
   }
 
   constructor() { }
