@@ -54,7 +54,7 @@ jobs:
         asset_name: ${{ env.NAME_BACKEND }}
         asset_content_type: application/java-archive
     - name: Generate Frontend Name
-      run: echo "NAME_FRONTEND=$(echo bundestagswahl-frontend-$RELEASE_VERSION.jar)" >> $GITHUB_ENV
+      run: echo "NAME_FRONTEND=$(echo bundestagswahl-frontend-$RELEASE_VERSION.zip)" >> $GITHUB_ENV
     - name: Upload Frontend Zip
       id: upload-frontend-zip
       uses: actions/upload-release-asset@v1
