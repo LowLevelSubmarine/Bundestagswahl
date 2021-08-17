@@ -22,6 +22,8 @@ jobs:
       run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
     - name: Boot Jar
       run: ./gradlew bootJar
+    - name: NPM install
+      run: cd frontend && npm install && cd ..
     - name: Build NPM
       run: cd frontend && npm run cd-zip && cd ..
     - name: Set jarFile
