@@ -1,20 +1,20 @@
 package de._2n1p.bundestagswahl.calc
 
-import de._2n1p.bundestagswahl.dawum_dto.Dawum
-import de._2n1p.bundestagswahl.dawum_dto.Survey
-import de._2n1p.bundestagswahl.dawum_dto.SurveyPoint
+import de._2n1p.bundestagswahl.dawum.dto.Dawum
+import de._2n1p.bundestagswahl.dawum.dto.Survey
+import de._2n1p.bundestagswahl.dto.DataPoint
 import de._2n1p.bundestagswahl.utils.Stream.Companion.max
 import de._2n1p.bundestagswahl.utils.Stream.Companion.min
 import java.time.LocalDate
 
 class GraphCalculator {
 
-    fun calculate(dawum: Dawum): List<SurveyPoint> {
+    fun calculate(dawum: Dawum): List<DataPoint> {
 
         val bundestagCode = 0L
         val bundestagSurveys = dawum.surveys.filter { it.value.parliamentId == bundestagCode }
 
-        val surveyPoints: MutableList<SurveyPoint> = mutableListOf()
+        val dataPoints: MutableList<DataPoint> = mutableListOf()
 
         val minDay = bundestagSurveys.values.stream().min { it -> it.calcPeriodDate() }.get().date.toEpochDay()
         val maxDay = bundestagSurveys.values.stream().max { it -> it.calcPeriodDate() }.get().date.toEpochDay()
@@ -32,14 +32,14 @@ class GraphCalculator {
                 currSurveys.add(surveyEntry.value)
             }
             if (currSurveys.isNotEmpty()) {
-                surveyPoints.add(SurveyPoint(currDay, map.mapValues { it.value.calc() }, currSurveys.first().instituteId, currSurveys.first().taskerId))
+                dataPoints.add(DataPoint(currDay, map.mapValues { it.value.calc() }, currSurveys.map { de._2n1p.bundestagswahl.dto.Survey.fromDawumSurvey(it) }))
             }
             /*if (adjustmentValues.containsKey(13L)) {
                 surveyPoints.add(SurveyPoint(currDay, adjustmentValues.get(13L)!!, 0L, 0L))
             }*/
         }
 
-        return surveyPoints
+        return dataPoints
     }
 
     private fun calculatePartyAdjustedSurveys(adjustmentValues: Map<Long, Map<Long, Float>>, survey: Survey): Survey {

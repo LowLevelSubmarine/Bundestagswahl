@@ -1,4 +1,4 @@
-package de._2n1p.bundestagswahl.dawum_dto
+package de._2n1p.bundestagswahl.dawum.dto
 
 import com.google.gson.JsonElement
 import de._2n1p.bundestagswahl.utils.Gson.Companion.surf
