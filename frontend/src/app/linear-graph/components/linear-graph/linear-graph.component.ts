@@ -1,16 +1,12 @@
 import {
   AfterViewInit,
   ChangeDetectorRef,
-  Component,
+  Component, ElementRef, HostListener,
   Input,
-  OnInit,
   Renderer2, ViewChild,
 } from '@angular/core';
 import {ChartElementDto} from "../../dto/chartElement.dto";
-import {InfoBubbleDto} from "../../dto/InfoBubbleDto";
 import {GroupDto, GroupValueDto} from "../../dto/group-dto";
-import {OnLineDto} from "../../directives/line.directive";
-import {animate, state, style, transition, trigger} from "@angular/animations";
 import {ViewDimensions} from "./view-dimensions";
 import {InfoBubbleComponent} from "../info-bubble/info-bubble.component";
 import {GradientComponent} from "../gradient/gradient.component";
@@ -19,10 +15,11 @@ import {GradientComponent} from "../gradient/gradient.component";
   templateUrl: './linear-graph.component.html',
   styleUrls: ['./linear-graph.component.scss'],
 })
-export class LinearGraphComponent  {
+export class LinearGraphComponent implements AfterViewInit {
 
   @ViewChild(InfoBubbleComponent) infoBubble!: InfoBubbleComponent
   @ViewChild(GradientComponent) gradientComponent!: GradientComponent
+  @ViewChild("svgContainer") svgContainer!: ElementRef
 
   @Input()
   set data (elements: ChartElementDto[]) {
@@ -38,6 +35,18 @@ export class LinearGraphComponent  {
   viewDimensions = new ViewDimensions()
 
   constructor(private renderer: Renderer2, private changeDetection: ChangeDetectorRef) { }
+
+  @HostListener("window:resize",['$event'])
+  onresize($event: any) {
+      console.log("resiz")
+      //console.log($event)
+  }
+
+  ngAfterViewInit() {
+    console.log("HI")
+    console.log(this.svgContainer.nativeElement.offsetHeight)
+    console.log(this.svgContainer.nativeElement.offsetWidth)
+  }
 
 
 

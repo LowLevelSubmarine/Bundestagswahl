@@ -1,5 +1,4 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {OnLineDto} from "../../directives/line.directive";
 import {ChartElementDto, ChartElementValue} from "../../dto/chartElement.dto";
 import {GroupDto} from "../../dto/group-dto";
 import {ViewDimensions} from "../linear-graph/view-dimensions";
@@ -31,9 +30,6 @@ export class GradientComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onLine($event: OnLineDto) {
-    this.showGradient($event.groupname)
-  }
 
   showGradient(name: string) {
     this.gradient = name
