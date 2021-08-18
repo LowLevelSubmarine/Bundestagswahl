@@ -23,8 +23,10 @@ export class LinearGraphComponent implements AfterViewInit {
 
   @Input()
   set data (elements: ChartElementDto[]) {
+    this._date = elements
     this.buildGraph(elements)
   }
+  _date: ChartElementDto[] = []
   uniPos: number[] = []
   groups: GroupDto[] = []
   xMaxValue = 20
@@ -38,21 +40,25 @@ export class LinearGraphComponent implements AfterViewInit {
 
   @HostListener("window:resize",['$event'])
   onresize($event: any) {
-      console.log("resiz")
-      //console.log($event)
+      this.viewDimensions.svgHeight = this.svgContainer.nativeElement.offsetHeight
+      this.viewDimensions.svgWidth = this.svgContainer.nativeElement.offsetWidth
+      this.viewDimensions.recalculateViewDimensions()
+      this.buildGraph(this._date)
   }
 
   ngAfterViewInit() {
-    console.log("HI")
-    console.log(this.svgContainer.nativeElement.offsetHeight)
-    console.log(this.svgContainer.nativeElement.offsetWidth)
+    this.viewDimensions.svgHeight = this.svgContainer.nativeElement.offsetHeight
+    this.viewDimensions.svgWidth = this.svgContainer.nativeElement.offsetWidth
+    this.viewDimensions.recalculateViewDimensions()
   }
 
 
 
   buildGraph(elements: ChartElementDto[]) {
-    let minValue = null
-    let maxValue = null
+    let minValueX = null
+    let maxValueX = null
+    let minValueY = null
+    let maxValueY = null
     let groups: GroupDto[] = []
     let names: string[] = []
 
@@ -61,44 +67,50 @@ export class LinearGraphComponent implements AfterViewInit {
         names.push(element.name)
       }
       for (let serie of element.series) {
-        if (maxValue == null ||serie.position> maxValue) {
-          maxValue = serie.position
+        if (maxValueX == null ||serie.position> maxValueX) {
+          maxValueX = serie.position
         }
 
-        if (minValue == null ||serie.position< minValue) {
-          minValue = serie.position
+        if (maxValueY == null ||serie.y > maxValueY) {
+          maxValueY = serie.y
         }
+
+        if (minValueX == null ||serie.position< minValueX) {
+          minValueX = serie.position
+        }
+        if (minValueY == null ||serie.y< minValueY) {
+          minValueY = serie.y
+        }
+
 
       }
     }
 
-    if (!minValue || !maxValue) {
+    if (!minValueX || !maxValueX || !maxValueY || !minValueY) {
       return
     }
 
 
-    let maxYValue = 0
     this.uniPos = []
 
     for (let element of elements) {
       for (let serie of element.series) {
-        let pos = (serie.position - minValue) / (maxValue - minValue)
-        if (serie.value > maxYValue)  {
-          maxYValue = serie.value
-        }
+        let pos = (serie.position - minValueX) / (maxValueX - minValueX)
+        let newY = (serie.y - minValueY) / (maxValueY - minValueY)
+
         if (!this.uniPos.includes(pos)) {
           this.uniPos.push(pos)
         }
 
         if (groups.filter((it) => it.group == element.name).length == 0) {
-          groups.push({group:element.name,color: element.color,values:[{position:pos, x: serie.name, y: serie.value, info: serie.info}]})
+          groups.push({group:element.name,color: element.color,values:[{position:pos, x: serie.name, y: newY, info: serie.info}]})
         } else {
-            groups.filter((it) => it.group == element.name)[0].values.push({position:pos, x: serie.name, y: serie.value, info: serie.info})
+            groups.filter((it) => it.group == element.name)[0].values.push({position:pos, x: serie.name, y: newY, info: serie.info})
         }
       }
     }
 
-    this.viewDimensions.yOffset = maxYValue
+    this.viewDimensions.yPadding = 0
     this.groups = groups
   }
 

@@ -7,6 +7,6 @@ export interface ChartElementDto {
 export interface ChartElementValue {
   name: string,
   position: number,
-  value: number
+  y: number
   info: Map<string,string>
 }

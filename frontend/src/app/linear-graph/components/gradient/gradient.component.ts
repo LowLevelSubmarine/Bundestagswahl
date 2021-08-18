@@ -50,8 +50,8 @@ export class GradientComponent implements OnInit {
     for (let point of group.values) {
       result += `${this.viewDimensions.getX(point.position)},${this.viewDimensions.getY(point.y)} `
     }
-    result += `${this.viewDimensions.getX(group.values[group.values.length-1].position)},${(this.viewDimensions.svgHeight) -(this.viewDimensions.yOffset* this.viewDimensions.yMultiplier)} `
-    result += `${this.viewDimensions.getX(group.values[0].position)},${(this.viewDimensions.svgHeight) -(this.viewDimensions.yOffset* this.viewDimensions.yMultiplier)} `
+    result += `${this.viewDimensions.getX(group.values[group.values.length-1].position)},${this.viewDimensions.getY(0)} `
+    result += `${this.viewDimensions.getX(group.values[0].position)},${this.viewDimensions.getY(0)} `
     return result
   }
 

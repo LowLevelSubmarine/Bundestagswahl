@@ -19,7 +19,8 @@ app-section {
 }
 
 #section-trend .divider {
-  display: grid;
+  //display: grid;
+  display: block;
   grid-template-columns: 3fr 1fr;
 }
 
@@ -39,9 +40,4 @@ app-section {
       align-self: center;
     }
   }
-}
-
-
-#graph {
-  width: 100%;
 }
