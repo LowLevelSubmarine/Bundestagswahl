@@ -25,11 +25,10 @@ export class ApiService {
     return new Observable<ChartElementDto[]>((observer) => {
       this.getData().subscribe((observable) => {
         let parties = new Map<number, ChartElementDto>()
-
         for (let point of observable.points) {
           let date = new Date(point.date)
           let formattedDate = this.datePipe.transform(date,"dd.MM.yyyy")!
-          for (let [partyId, value] of Object.entries(point.value)) {
+          for (let [partyId, value] of Object.entries(point.values)) {
             let partyNum = Number(partyId)
             if (from && to && date >= from && date <= to || !from || !to) {
               if (parties.has(partyNum)) {
@@ -46,10 +45,11 @@ export class ApiService {
             }
           }
         }
-
         observer.next(Array.from(parties.values()))
       })
     })
   }
+
+
 
 }

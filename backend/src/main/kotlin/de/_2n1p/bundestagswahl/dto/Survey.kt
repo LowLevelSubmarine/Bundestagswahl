@@ -15,7 +15,7 @@ data class Survey(
             return Survey(
                 startDate = survey.surveyPeriodStart,
                 endDate = survey.surveyPeriodEnd,
-                releaseDate = survey.calcPeriodDate(),
+                releaseDate = survey.date,
                 instituteId = survey.instituteId,
                 taskerId = survey.taskerId
             )
