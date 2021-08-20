@@ -45,6 +45,7 @@ export class LinearGraphComponent implements AfterViewInit {
   circleStroke = 2
   yMarker: YLines[] = []
   showCircles = true
+  bigDataSet = false
 
   viewDimensions = new ViewDimensions()
 
@@ -53,14 +54,14 @@ export class LinearGraphComponent implements AfterViewInit {
   @HostListener("window:resize",['$event'])
   onresize($event: any) {
       //TODO: fix: this.viewDimensions.svgHeight = this.svgContainer.nativeElement.offsetHeight
+      this.infoBubble.closeBubble()
       this.viewDimensions.svgWidth = this.svgContainer.nativeElement.offsetWidth
       this.viewDimensions.recalculateViewDimensions()
       if (this.viewDimensions.xMultiplier<=290) {
         this.showCircles = false
-      } else {
+      } else if (!this.bigDataSet) {
         this.showCircles = true
       }
-      this.infoBubble.closeBubble()
   }
 
   ngAfterViewInit() {
@@ -111,6 +112,12 @@ export class LinearGraphComponent implements AfterViewInit {
     this.uniPos = []
 
     for (let element of chartElement.chartGroups) {
+      if (element.points.length > this.viewDimensions.xMultiplier) {
+        this.bigDataSet = true
+        this.showCircles = false
+      }
+
+
       for (let serie of element.points) {
         let pos = (serie.position - minValueX) / (maxValueX - minValueX)
         let newY = (serie.y - minValueY) / (maxValueY - minValueY)
@@ -127,9 +134,11 @@ export class LinearGraphComponent implements AfterViewInit {
       }
     }
 
+    let yMarker = []
     for (const yLine of chartElement.yLines) {
-      this.yMarker.push({position:(yLine.position - minValueY) / (maxValueY - minValueY),name:yLine.name, stroke: yLine.stroke})
+      yMarker.push({position:(yLine.position - minValueY) / (maxValueY - minValueY),name:yLine.name, stroke: yLine.stroke})
     }
+    this.yMarker = yMarker
 
     this.groups = groups
   }

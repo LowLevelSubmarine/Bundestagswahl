@@ -15,8 +15,11 @@ export class ViewDimensions {
   yMultiplier = 0
 
   recalculateViewDimensions() {
-    this.xMultiplier = Math.abs(this.svgWidth-this.xOffset-this.circleRadius*2)
-    this.yMultiplier = Math.abs(this.svgHeight -this.yPaddingTop-this.yPaddingBottom)
+    this.xMultiplier = (this.svgWidth-this.xOffset-this.circleRadius*2)
+    this.yMultiplier = (this.svgHeight -this.yPaddingTop-this.yPaddingBottom)
+
+    if (this.xMultiplier<0) this.xMultiplier = 1
+    if (this.yMultiplier<0) this.yMultiplier = 1
   }
 
 
