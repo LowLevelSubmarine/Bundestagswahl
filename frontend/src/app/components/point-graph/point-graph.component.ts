@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ColorHelper, ScaleType} from "@swimlane/ngx-charts";
-import {ChartElementDto} from "../../linear-graph/dto/chartElement.dto";
+import {ChartElementGroup} from "../../linear-graph/dto/chartElement.dto";
 
 @Component({
   selector: 'app-point-graph',
@@ -20,10 +20,10 @@ export class PointGraphComponent {
   timeline: boolean = true;
 
 
-  _data: ChartElementDto[] | null = null;
+  _data: ChartElementGroup[] | null = null;
 
   @Input()
-  set data(data: ChartElementDto[]| null) {
+  set data(data: ChartElementGroup[]| null) {
     if (data) {
       this.colorScheme.domain = []
       for (let element of data) {
@@ -32,7 +32,7 @@ export class PointGraphComponent {
       this._data = data
     }
   }
-  get data():ChartElementDto[]| null {
+  get data():ChartElementGroup[]| null {
     return this._data
   }
 
