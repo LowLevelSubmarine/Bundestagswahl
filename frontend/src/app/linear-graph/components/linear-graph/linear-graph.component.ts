@@ -5,7 +5,7 @@ import {
   Input,
   Renderer2, ViewChild,
 } from '@angular/core';
-import {ChartElementDto} from "../../dto/chartElement.dto";
+import {ChartElement, ChartElementGroup, YLines} from "../../dto/chartElement.dto";
 import {GroupDto, GroupValueDto} from "../../dto/group-dto";
 import {ViewDimensions} from "./view-dimensions";
 import {InfoBubbleComponent} from "../info-bubble/info-bubble.component";
@@ -22,17 +22,29 @@ export class LinearGraphComponent implements AfterViewInit {
   @ViewChild("svgContainer") svgContainer!: ElementRef
 
   @Input()
-  set data (elements: ChartElementDto[]) {
-    this._date = elements
-    this.buildGraph(elements)
+  set data (elements: ChartElement| undefined) {
+    if (elements) {
+      this._data = elements
+      this.buildGraph(elements)
+    }
   }
-  _date: ChartElementDto[] = []
+
+  @Input()
+  set highlitedGroup(name: string| undefined) {
+    if (name) {
+      console.log(this._data)
+      this.gradientComponent.showGradient(name)
+    } else {
+      this.gradientComponent.hideGradient()
+
+    }
+  }
+  _data!: ChartElement
   uniPos: number[] = []
   groups: GroupDto[] = []
-  xMaxValue = 20
   circleRadius = 4
   circleStroke = 2
-  yMarker: number[] = [0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100]
+  yMarker: YLines[] = []
 
   viewDimensions = new ViewDimensions()
 
@@ -43,7 +55,7 @@ export class LinearGraphComponent implements AfterViewInit {
       this.viewDimensions.svgHeight = this.svgContainer.nativeElement.offsetHeight
       this.viewDimensions.svgWidth = this.svgContainer.nativeElement.offsetWidth
       this.viewDimensions.recalculateViewDimensions()
-      this.buildGraph(this._date)
+      this.infoBubble.closeBubble()
   }
 
   ngAfterViewInit() {
@@ -54,7 +66,7 @@ export class LinearGraphComponent implements AfterViewInit {
 
 
 
-  buildGraph(elements: ChartElementDto[]) {
+  buildGraph(chartElement: ChartElement) {
     let minValueX = null
     let maxValueX = null
     let minValueY = null
@@ -62,11 +74,11 @@ export class LinearGraphComponent implements AfterViewInit {
     let groups: GroupDto[] = []
     let names: string[] = []
 
-    for (let element of elements) {
+    for (let element of chartElement.chartGroups) {
       if (!names.includes(element.name)) {
         names.push(element.name)
       }
-      for (let serie of element.series) {
+      for (let serie of element.points) {
         if (maxValueX == null ||serie.position> maxValueX) {
           maxValueX = serie.position
         }
@@ -93,8 +105,8 @@ export class LinearGraphComponent implements AfterViewInit {
 
     this.uniPos = []
 
-    for (let element of elements) {
-      for (let serie of element.series) {
+    for (let element of chartElement.chartGroups) {
+      for (let serie of element.points) {
         let pos = (serie.position - minValueX) / (maxValueX - minValueX)
         let newY = (serie.y - minValueY) / (maxValueY - minValueY)
 
@@ -110,15 +122,14 @@ export class LinearGraphComponent implements AfterViewInit {
       }
     }
 
-    this.viewDimensions.yPadding = 0
+    for (const yLine of chartElement.yLines) {
+      this.yMarker.push({position:(yLine.position - minValueY) / (maxValueY - minValueY),name:yLine.name, stroke: yLine.stroke})
+    }
+
     this.groups = groups
   }
 
-  getStrokeColor(group:any) {
-    return `stroke:${group.color};`
-  }
-
-  getYScala(marker: number) {
-    return this.viewDimensions.getY(marker)
+  getStrokeColor(color:string) {
+    return `stroke:${color};`
   }
 }

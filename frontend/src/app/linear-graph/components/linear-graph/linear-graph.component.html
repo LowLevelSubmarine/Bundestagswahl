@@ -3,8 +3,9 @@
     <!-- Data grid  Y-->
 
     <g *ngFor="let marker of yMarker">
-      <line [attr.x1]="0" [attr.y1]="getYScala(marker)" [attr.x2]="xMaxValue* this.viewDimensions.xMultiplier" [attr.y2]="getYScala(marker)"
-            [attr.style]="'stroke:grey; opacity:0.5;'"></line>
+      <text [attr.x]="viewDimensions.getX(0)-8" [attr.y]="viewDimensions.getY(marker.position)" class="yText" alignment-baseline="central" text-anchor="end" >{{marker.name}} </text>
+      <line [attr.x1]="viewDimensions.getX(0)" [attr.y1]="viewDimensions.getY(marker.position)" [attr.x2]="viewDimensions.getX(1)" [attr.y2]="viewDimensions.getY(marker.position)"
+            [attr.style]="'stroke:grey; opacity:0.5;'" [attr.stroke-width]="marker.stroke"></line>
     </g>
 
     <g *ngFor="let marker of uniPos">
@@ -22,7 +23,7 @@
       <g *ngFor="let point of group.values; index as i">
         <g *ngIf="(i < group.values.length-1)" lchart-line [x1]="this.viewDimensions.getX(point.position)" [y1]="this.viewDimensions.getY(point.y)"
                 [x2]="this.viewDimensions.getX(group.values[i+1].position)" [y2]="this.viewDimensions.getY(group.values[i+1].y)"
-                [color]="getStrokeColor(group)"
+                [color]="getStrokeColor(group.color)"
                 [groupname]="group.group" [gradient]="gradientComponent">
         </g>
       </g>

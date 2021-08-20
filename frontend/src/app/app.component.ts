@@ -1,7 +1,8 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ApiService} from "./api.service";
-import {ChartElementDto} from "./linear-graph/dto/chartElement.dto";
+import {ChartElement, ChartElementGroup} from "./linear-graph/dto/chartElement.dto";
 import {DatePipe} from "@angular/common";
+import {Party} from "./dto/party.dto";
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,8 @@ import {DatePipe} from "@angular/common";
 })
 export class AppComponent{
   title = 'frontend';
-  data: ChartElementDto[]  = []
+  data: ChartElement|undefined = undefined
+  highlightedGroup: string| undefined = undefined
   from = this.datePipe.transform(new Date().setDate(new Date().getDate() - 90), "yyyy-MM-dd")!
   to = this.datePipe.transform(new Date(), "yyyy-MM-dd")!
 
@@ -21,9 +23,12 @@ export class AppComponent{
   applyDates() {
     this.apiService.getChartData(new Date(this.from), new Date(this.to)).subscribe((observer) => {
       this.data = observer
-      this.changeDetection.detectChanges()
     })
   }
 
 
+  onPartySelect($event: Party) {
+    this.highlightedGroup  = $event.shortcut
+    console.log($event)
+  }
 }

@@ -5,7 +5,7 @@
       formControlName="party"
       [value]="party.id"
       [id]="party.id"
-      (change)="this.onChange(party)">
+      (change)="this.onChangeFunction(party)">
     <label [for]="party.id">
       <div class="party-circle" [attr.style]="'background-color: ' + party.color + ';'"></div>
       {{party.shortcut}}

@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ChartElementDto, ChartElementValue} from "../../dto/chartElement.dto";
+import {ChartElementGroup, ChartElementValue} from "../../dto/chartElement.dto";
 import {GroupDto} from "../../dto/group-dto";
 import {ViewDimensions} from "../linear-graph/view-dimensions";
 import {animate, state, style, transition, trigger} from "@angular/animations";
