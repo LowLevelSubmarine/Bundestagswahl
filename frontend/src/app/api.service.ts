@@ -25,7 +25,6 @@ export class ApiService {
     return new Observable<ChartElement>((observer) => {
       this.getData().subscribe((observable) => {
         let parties = new Map<number, ChartElementGroup>()
-
         for (let point of observable.points) {
           let date = new Date(point.date)
           let formattedDate = this.datePipe.transform(date,"dd.MM.yyyy")!
@@ -47,7 +46,15 @@ export class ApiService {
           }
         }
 
-        observer.next(Array.from(parties.values()))
+        //TODO: Refactor pls
+        let ylines:YLines[] = []
+        for (let i = 0; i<=20;i++) {
+          ylines.push({position:i*5,name:String(i*5)+"%",stroke:i==1?3:undefined})
+        }
+
+
+        observer.next({chartGroups:Array.from(parties.values()),yLines:ylines})
+
       })
     })
   }

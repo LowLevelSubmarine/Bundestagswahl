@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {ChartElementGroup, ChartElementValue} from "../../dto/chartElement.dto";
 import {GroupDto} from "../../dto/group-dto";
 import {ViewDimensions} from "../linear-graph/view-dimensions";
-import {animate, state, style, transition, trigger} from "@angular/animations";
+import {animate, keyframes, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'g[lchart-gradient]',
@@ -14,6 +14,14 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
         opacity: 0
       })),
       transition('void<=>*', animate('150ms')),
+      transition('*<=>void', animate('150ms')),
+      transition('*<=>*', animate('150ms',keyframes([
+        style({opacity:0}),
+        style({opacity:25}),
+        style({opacity:50}),
+        style({opacity:75}),
+        style({opacity:100})
+      ]))),
     ]),
   ]
 })

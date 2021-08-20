@@ -32,19 +32,19 @@ export class LinearGraphComponent implements AfterViewInit {
   @Input()
   set highlitedGroup(name: string| undefined) {
     if (name) {
-      console.log(this._data)
       this.gradientComponent.showGradient(name)
-    } else {
+    } else if (this.gradientComponent) {
       this.gradientComponent.hideGradient()
 
     }
   }
   _data!: ChartElement
-  uniPos: number[] = []
+  uniPos: { pos:number, name:string }[] = []
   groups: GroupDto[] = []
   circleRadius = 4
   circleStroke = 2
   yMarker: YLines[] = []
+  showCircles = true
 
   viewDimensions = new ViewDimensions()
 
@@ -52,9 +52,14 @@ export class LinearGraphComponent implements AfterViewInit {
 
   @HostListener("window:resize",['$event'])
   onresize($event: any) {
-      this.viewDimensions.svgHeight = this.svgContainer.nativeElement.offsetHeight
+      //TODO: fix: this.viewDimensions.svgHeight = this.svgContainer.nativeElement.offsetHeight
       this.viewDimensions.svgWidth = this.svgContainer.nativeElement.offsetWidth
       this.viewDimensions.recalculateViewDimensions()
+      if (this.viewDimensions.xMultiplier<=290) {
+        this.showCircles = false
+      } else {
+        this.showCircles = true
+      }
       this.infoBubble.closeBubble()
   }
 
@@ -110,8 +115,8 @@ export class LinearGraphComponent implements AfterViewInit {
         let pos = (serie.position - minValueX) / (maxValueX - minValueX)
         let newY = (serie.y - minValueY) / (maxValueY - minValueY)
 
-        if (!this.uniPos.includes(pos)) {
-          this.uniPos.push(pos)
+        if (this.uniPos.filter((it) => it.pos == pos).length == 0) {
+          this.uniPos.push({pos:pos,name:serie.name})
         }
 
         if (groups.filter((it) => it.group == element.name).length == 0) {

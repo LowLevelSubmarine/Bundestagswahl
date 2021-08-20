@@ -28,7 +28,6 @@ export class AppComponent{
     this.apiService.getData().subscribe((data) => {
       this.today = data.today
       let dist: ParliamentCompositionElement[] = []
-      console.log(data.seatDistribution)
       for (let [key, value] of Object.entries(data.seatDistribution)) {
         dist.push({seats: value, color: PartyColors.getColorByParty(Number(key))})
       }
