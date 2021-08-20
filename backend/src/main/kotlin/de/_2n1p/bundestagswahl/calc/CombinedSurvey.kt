@@ -1,6 +1,6 @@
 package de._2n1p.bundestagswahl.calc
 
-import de._2n1p.bundestagswahl.dawum_dto.Survey
+import de._2n1p.bundestagswahl.dawum.dto.Survey
 import de._2n1p.bundestagswahl.utils.Date.Companion.isBetween
 import de._2n1p.bundestagswahl.utils.Optional.Companion.orNull
 import java.lang.Long.max

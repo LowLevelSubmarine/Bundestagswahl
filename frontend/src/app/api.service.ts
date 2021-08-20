@@ -29,7 +29,7 @@ export class ApiService {
         for (let point of observable.points) {
           let date = new Date(point.date)
           let formattedDate = this.datePipe.transform(date,"dd.MM.yyyy")!
-          for (let [partyId, value] of Object.entries(point.value)) {
+          for (let [partyId, value] of Object.entries(point.values)) {
             let partyNum = Number(partyId)
             if (from && to && date >= from && date <= to || !from || !to) {
               if (parties.has(partyNum)) {
@@ -46,14 +46,8 @@ export class ApiService {
             }
           }
         }
-        //TODO: Refactor pls
-        let ylines:YLines[] = []
-        for (let i = 0; i<=20;i++) {
-          ylines.push({position:i*5,name:String(i*5)+"%",stroke:i==1?3:undefined})
-        }
 
-
-        observer.next({chartGroups:Array.from(parties.values()),yLines:ylines})
+        observer.next(Array.from(parties.values()))
       })
     })
   }

@@ -8,11 +8,11 @@
   </g>
   <g>
     <text *ngFor="let element of (showLabels? elements : []); index as i"
-          text-anchor="middle" alignment-baseline="central"
+          text-anchor="middle" dominant-baseline="central"
           [attr.x]="indexToCoordinate(i, 50-seatAreaWidth/2)[0]"
-          [attr.y]="indexToCoordinate(i, 50-seatAreaWidth/2 )[1]"
+          [attr.y]="indexToCoordinate(i, 50-seatAreaWidth/2)[1]"
           font-weight="600" font-size="0.5em" fill="white">
-      {{Math.round(element.seats*10)/10}}
+      {{element.seats}}
     </text>
   </g>
 </svg>

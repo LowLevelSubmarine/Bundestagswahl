@@ -1,11 +1,10 @@
-<!--<app-linear-graph [data]="data"></app-linear-graph>-->
 <header>
   <h1>Bundestagswahl 2021</h1>
   <p>Trendbeobachtung durch Kombination verschiedener Umfrageinstitute</p>
 </header>
-<app-section title="Heute">
-  <h3>Neue Forsa Studie</h3>
-  <p>Grüne +2,8%</p>
+<app-section *ngIf="today" title="Heute">
+  <h3>{{today.headline}}</h3>
+  <p>{{today.subtext}}</p>
 </app-section>
 <app-section title="Trend" id="section-trend">
   <div class="divider">
@@ -31,7 +30,7 @@
 <app-section title="Sitzverteilung" id="section-parliament-composition">
   <div class="divider">
     <app-parliament-composition
-      [elements]="[{color:'#4C9849', seats:41},{color:'#232323', seats:34},{color:'#E51D1D', seats:77},{color:'#E5DE1D', seats:54},{color:'#1D9AE5', seats:24}]"
+      [elements]="seatDistribution"
     ></app-parliament-composition>
   </div>
 </app-section>

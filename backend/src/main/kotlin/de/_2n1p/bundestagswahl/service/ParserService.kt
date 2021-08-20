@@ -1,13 +1,17 @@
 package de._2n1p.bundestagswahl.service
 
 import de._2n1p.bundestagswahl.calc.GraphCalculator
-import de._2n1p.bundestagswahl.dawum_dto.Dawum
-import de._2n1p.bundestagswahl.dawum_dto.ResultDto
+import de._2n1p.bundestagswahl.calc.SeatDistribution
+import de._2n1p.bundestagswahl.calc.TodayText
+import de._2n1p.bundestagswahl.dawum.dto.Dawum
+import de._2n1p.bundestagswahl.dto.ResultDto
 import de._2n1p.bundestagswahl.requests.DawumDbRequest
+import de._2n1p.bundestagswahl.utils.Date.Companion.isBetween
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -36,9 +40,16 @@ class ParserService(val httpClientService: HttpClientService) {
         dawum = Dawum(DawumDbRequest(httpClientService).fetch())
         val surveyPoints = GraphCalculator().calculate(dawum!!)
         logger.info("Done Fetching new JSON")
-        result = ResultDto(surveyPoints,dawum!!.parties, dawum!!.taskers,dawum!!.institutes)
-
-
+        val seatDistribution = SEAT_DISTRIBUTION.calc(surveyPoints.last().values)
+        val dateNow = LocalDate.now()
+        val todaysSurveyBasedDataPoint = surveyPoints.find { dataPoint -> dataPoint.surveys.find { survey -> survey.releaseDate == dateNow } != null }
+        if (todaysSurveyBasedDataPoint != null) {
+            val lastDataPoint = surveyPoints.filter { it.date.isBefore(todaysSurveyBasedDataPoint.date) }.maxByOrNull { it.date }
+            val today = TodayText(todaysSurveyBasedDataPoint, lastDataPoint!!, dawum!!).getToday()
+            result = ResultDto(today, seatDistribution, surveyPoints, dawum!!.parties, dawum!!.taskers, dawum!!.institutes)
+        } else {
+            result = ResultDto(null, seatDistribution, surveyPoints, dawum!!.parties, dawum!!.taskers, dawum!!.institutes)
+        }
         dawumListeners.forEach {
             it.getDawum(dawum!!)
         }
@@ -48,8 +59,12 @@ class ParserService(val httpClientService: HttpClientService) {
         dawumListeners.add(dawumListener)
     }
 
-}
+    companion object {
+        val SEAT_DISTRIBUTION = SeatDistribution(598, 5F)
+    }
 
-interface DawumListener {
-    fun getDawum(dawum: Dawum)
+    interface DawumListener {
+        fun getDawum(dawum: Dawum)
+    }
+
 }

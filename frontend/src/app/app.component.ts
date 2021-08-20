@@ -3,6 +3,10 @@ import {ApiService} from "./api.service";
 import {ChartElement, ChartElementGroup} from "./linear-graph/dto/chartElement.dto";
 import {DatePipe} from "@angular/common";
 import {Party} from "./dto/party.dto";
+import {async} from "rxjs";
+import {ParliamentCompositionElement} from "./components/parliament-composition/parliament-composition.component";
+import {PartyColors} from "./party-colors";
+import {Today} from "./dto/today.dto";
 
 @Component({
   selector: 'app-root',
@@ -10,14 +14,26 @@ import {Party} from "./dto/party.dto";
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent{
+
   title = 'frontend';
   data: ChartElement|undefined = undefined
   highlightedGroup: string| undefined = undefined
+  today: Today | undefined
+  seatDistribution: ParliamentCompositionElement[] = []
   from = this.datePipe.transform(new Date().setDate(new Date().getDate() - 90), "yyyy-MM-dd")!
   to = this.datePipe.transform(new Date(), "yyyy-MM-dd")!
 
   constructor(private apiService: ApiService, private changeDetection: ChangeDetectorRef, private datePipe: DatePipe) {
     this.applyDates()
+    this.apiService.getData().subscribe((data) => {
+      this.today = data.today
+      let dist: ParliamentCompositionElement[] = []
+      console.log(data.seatDistribution)
+      for (let [key, value] of Object.entries(data.seatDistribution)) {
+        dist.push({seats: value, color: PartyColors.getColorByParty(Number(key))})
+      }
+      this.seatDistribution = dist
+    })
   }
 
   applyDates() {
