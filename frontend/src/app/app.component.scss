@@ -19,7 +19,8 @@ app-section {
 }
 
 #section-trend .divider {
-  display: grid;
+  //display: grid;
+  display: block;
   grid-template-columns: 3fr 1fr;
 }
 
@@ -37,6 +38,7 @@ app-section {
 
     app-parliament-composition {
       align-self: center;
+      width: 15em;
     }
   }
 }

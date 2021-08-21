@@ -1,1 +1,24 @@
-<circle appCircle="" cx="486.4705882352941" cy="263.4223356" r="4" fill="blue" stroke="#636363" stroke-width="2"></circle>
+<!-- Bubbles -->
+<style>
+  .bubbleBackground {
+    fill: rgba(0, 0, 0, 0.8);
+  }
+
+  text {
+    fill: black;
+    text-align: center;
+  }
+</style>
+
+
+<svg:g *ngIf="this.bubbleOpen">
+  <svg:rect [attr.x]="bubbleX" [attr.y]="bubbleY" rx="20" ry="20" [attr.width]="bubbleWidth"
+        [attr.height]="bubbleHeight"
+        class="bubbleBackground"></svg:rect>
+  <svg:polygon [attr.points]="getBubbleTrianglepoints()" class="bubbleBackground"></svg:polygon>
+
+  <g *ngFor="let text of getEntries(); index as i">
+    <svg:text [attr.x]="getBubbleCaptionTextX()" [attr.y]="getBubbleCaptionTextY()" text-anchor="middle">{{text[0]}}
+      :{{text[1]}}</svg:text>
+  </g>
+</svg:g>

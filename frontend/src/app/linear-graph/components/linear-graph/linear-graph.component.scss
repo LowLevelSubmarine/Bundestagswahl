@@ -1,9 +1,17 @@
-#svgContainer {
-  padding-left: 1vw;
+:host {
+  display: block;
+}
+
+.yText {
+  fill: black;
 }
 
 .bubbleBackground {
   fill: rgba(0, 0, 0, 0.8);
+}
+
+svg {
+  user-select: none;
 }
 
 text {

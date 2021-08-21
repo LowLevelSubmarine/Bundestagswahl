@@ -1,68 +1,51 @@
-<div id="svgContainer">
-  <svg width="1000" height="500" class="mainsvg">
+<div id="svgContainer" #svgContainer>
+  <svg class="mainsvg" [attr.height]="viewDimensions.svgHeight" [attr.width]="viewDimensions.svgWidth">
     <!-- Data grid  Y-->
 
     <g *ngFor="let marker of yMarker">
-      <line [attr.x1]="0" [attr.y1]="getYScala(marker)" [attr.x2]="xMaxValue* xMultiplier" [attr.y2]="getYScala(marker)"
-            [attr.style]="'stroke:grey; opacity:0.5;'"></line>
+      <text [attr.x]="viewDimensions.getX(0)-8" [attr.y]="viewDimensions.getY(marker.position)" class="yText" alignment-baseline="central" text-anchor="end" >{{marker.name}}</text>
+      <line [attr.x1]="viewDimensions.getX(0)" [attr.y1]="viewDimensions.getY(marker.position)" [attr.x2]="viewDimensions.getX(1)" [attr.y2]="viewDimensions.getY(marker.position)"
+            [attr.style]="'stroke:grey; opacity:0.5;'" [attr.stroke-width]="marker.stroke"></line>
     </g>
 
     <g *ngFor="let marker of uniPos">
-      <line [attr.x1]="(marker*xMultiplier)+xOffset" [attr.y1]="0" [attr.x2]="(marker*xMultiplier)+xOffset"
-            [attr.y2]="(yMaxValue* yMultiplier)+20" [attr.style]="'stroke:grey; opacity:0.5;'"></line>
+      <text [attr.x]="viewDimensions.getX(marker.pos)" [attr.y]="viewDimensions.getY(0)+8" class="yText" alignment-baseline="central" text-anchor="end" >{{marker.name}} </text>
+      <line [attr.x1]="this.viewDimensions.getX(marker.pos)" [attr.y1]="this.viewDimensions.getY(1)" [attr.x2]="this.viewDimensions.getX(marker.pos)"
+            [attr.y2]="this.viewDimensions.getY(0)" [attr.style]="'stroke:grey; opacity:0.5;'"></line>
     </g>
 
     <!-- Gradients -->
 
-    <g *ngIf="gradient">
-      <defs>
-        <linearGradient id="partyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" [attr.stop-color]="getColorByGroup(this.gradient)+'AA'"/>
-          <stop offset="100%" [attr.stop-color]="getColorByGroup(this.gradient)+'00'"/>
-        </linearGradient>
-      </defs>
-      <polygon [attr.points]="getGradientPointsForGroup(this.gradient)" fill="url(#partyGradient)"></polygon>
-    </g>
+    <g lchart-gradient [groups]="groups" [viewDimensions]="viewDimensions"></g>
 
     <!-- Data Lines -->
 
     <g *ngFor="let group of groups">
       <g *ngFor="let point of group.values; index as i">
-        <g *ngIf="(i < group.values.length-1)">
-          <line appLine [attr.x1]="getX(point)" [attr.y1]="getY(point)"
-                [attr.x2]="getX(group.values[i+1])" [attr.y2]="getY(group.values[i+1])"
-                [attr.stroke-width]="circleStroke" [attr.style]="getStrokeColor(group)" (onMouseOut)="hideGradient()"
-                (onMouseOver)="onLine($event)" [groupname]="group.group"></line>
+        <g *ngIf="(i < group.values.length-1)" lchart-line [x1]="this.viewDimensions.getX(point.position)" [y1]="this.viewDimensions.getY(point.y)"
+                [x2]="this.viewDimensions.getX(group.values[i+1].position)" [y2]="this.viewDimensions.getY(group.values[i+1].y)"
+                [color]="getStrokeColor(group.color)"
+                [groupname]="group.group" [gradient]="gradientComponent">
         </g>
       </g>
     </g>
 
     <!-- Data Points -->
-    <g *ngFor="let group of groups">
-      <g *ngFor="let point of group.values">
-        <circle appCircle (onMouseOver)="openBubble($event)" (onMouseOut)="closeBubble()" [info]="point.info"
-                [attr.cx]="getX(point)"
-                [attr.cy]="getY(point)" [attr.r]="circleRadius" [attr.fill]="'white'"
-                [attr.stroke]="group.color" [attr.stroke-width]="circleStroke" [groupname]="group.group"></circle>
+    <g *ngFor="let group of (showCircles == true?groups:[])">
+      <g *ngFor="let point of group.values"
+        lchart-circle-component
+            [cx]="this.viewDimensions.getX(point.position)"
+            [cy]="this.viewDimensions.getY(point.y)"
+            [info]="point.info"
+            [groupname]="group.group"
+            [infoBubble]="infoBubble"
+            [gradientComponent]="gradientComponent"
+            [strokeColor]="group.color">
       </g>
     </g>
 
-    <!-- Bubbles -->
-    <style>
-    </style>
+    <g lchart-info-bubble [viewDimensions]="viewDimensions" [gradient]="gradientComponent"></g>
 
-
-    <g *ngIf="this.bubbleOpen">
-      <rect [attr.x]="bubbleX" [attr.y]="bubbleY" rx="20" ry="20" [attr.width]="bubbleWidth"
-            [attr.height]="bubbleHeight"
-            class="bubbleBackground"/>
-      <polygon [attr.points]="getBubbleTrianglepoints()" class="bubbleBackground"></polygon>
-
-      <g *ngFor="let text of getEntries(); index as i">
-        <text [attr.x]="getBubbleCaptionTextX()" [attr.y]="getBubbleCaptionTextY()" text-anchor="middle">{{text[0]}}
-          :{{text[1]}}</text>
-      </g>
-    </g>
   </svg>
 </div>
 

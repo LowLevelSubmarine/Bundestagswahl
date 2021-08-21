@@ -1,6 +1,7 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
 import { ReactiveFormsModule } from "@angular/forms";
+import {Party} from "../../dto/party.dto";
 
 @Component({
   selector: 'app-graph-party-selector',
@@ -13,9 +14,10 @@ export class GraphPartySelectorComponent {
   public form: FormGroup = new FormGroup({
     party: new FormControl()
   })
+  @Output() onChange:EventEmitter<Party> = new EventEmitter()
 
-  onChange(party: any) {
-    console.log(party)
+  onChangeFunction(party: any) {
+    this.onChange.emit(party)
   }
 
 }

@@ -1,6 +1,6 @@
 package de._2n1p.bundestagswahl.api
 
-import de._2n1p.bundestagswahl.dawum_dto.ResultDto
+import de._2n1p.bundestagswahl.dto.ResultDto
 import de._2n1p.bundestagswahl.exception.RessourceNotAvailibleException
 import de._2n1p.bundestagswahl.service.ParserService
 import org.springframework.web.bind.annotation.GetMapping

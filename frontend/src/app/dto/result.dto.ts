@@ -1,10 +1,10 @@
-import {Party} from "./party.dto";
-import {Tasker} from "./tasker.dto";
-import {Institute} from "./institute.dto";
-import {SurveyPoint} from "./survey-point.dto";
+import { DataPoint } from "./data-point.dto";
+import { Today } from "./today.dto";
 
-export interface ResultDto{
-  points: SurveyPoint[]
+export interface ResultDto {
+  today?: Today
+  seatDistribution: Map<number, number>
+  points: DataPoint[]
   parties: any
   taskers: any
   institutes: any
