@@ -2,9 +2,9 @@
   <h1>Bundestagswahl 2021</h1>
   <p>Trendbeobachtung durch Kombination verschiedener Umfrageinstitute</p>
 </header>
-<app-section *ngIf="today" title="Heute">
-  <h3>{{today.headline}}</h3>
-  <p>{{today.subtext}}</p>
+<app-section *ngIf="changes" title="Aktuell">
+  <h3>{{changes.headline}}</h3>
+  <p>{{changes.subtext}}</p>
 </app-section>
 <app-section title="Trend" id="section-trend">
   <div class="divider">

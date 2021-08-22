@@ -5,7 +5,7 @@ import de._2n1p.bundestagswahl.dawum.dto.Party
 import de._2n1p.bundestagswahl.dawum.dto.Tasker
 
 data class ResultDto (
-    val today: Today?,
+    val changes: Changes?,
     val seatDistribution: Map<Long, Int>,
     val points: List<DataPoint>,
     val parties: Map<Long, Party>,

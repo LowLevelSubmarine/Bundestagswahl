@@ -1,4 +1,4 @@
-export interface Today {
+export interface Changes {
   headline: String
   subtext: String
 }
