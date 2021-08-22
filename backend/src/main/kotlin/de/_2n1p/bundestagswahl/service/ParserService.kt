@@ -2,16 +2,14 @@ package de._2n1p.bundestagswahl.service
 
 import de._2n1p.bundestagswahl.calc.GraphCalculator
 import de._2n1p.bundestagswahl.calc.SeatDistribution
-import de._2n1p.bundestagswahl.calc.TodayText
+import de._2n1p.bundestagswahl.calc.ChangesText
 import de._2n1p.bundestagswahl.dawum.dto.Dawum
 import de._2n1p.bundestagswahl.dto.ResultDto
 import de._2n1p.bundestagswahl.requests.DawumDbRequest
-import de._2n1p.bundestagswahl.utils.Date.Companion.isBetween
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -36,20 +34,15 @@ class ParserService(val httpClientService: HttpClientService) {
     }
 
     private fun fetchDawumBody() {
-        logger.info("Fetched new JSON")
+        logger.info("Fetching Dawum ...")
         dawum = Dawum(DawumDbRequest(httpClientService).fetch())
-        val surveyPoints = GraphCalculator().calculate(dawum!!)
-        logger.info("Done Fetching new JSON")
-        val seatDistribution = SEAT_DISTRIBUTION.calc(surveyPoints.last().values)
-        val dateNow = LocalDate.now()
-        val todaysSurveyBasedDataPoint = surveyPoints.find { dataPoint -> dataPoint.surveys.find { survey -> survey.releaseDate == dateNow } != null }
-        if (todaysSurveyBasedDataPoint != null) {
-            val lastDataPoint = surveyPoints.filter { it.date.isBefore(todaysSurveyBasedDataPoint.date) }.maxByOrNull { it.date }
-            val today = TodayText(todaysSurveyBasedDataPoint, lastDataPoint!!, dawum!!).getToday()
-            result = ResultDto(today, seatDistribution, surveyPoints, dawum!!.parties, dawum!!.taskers, dawum!!.institutes)
-        } else {
-            result = ResultDto(null, seatDistribution, surveyPoints, dawum!!.parties, dawum!!.taskers, dawum!!.institutes)
-        }
+        logger.info("Recalculating database ...")
+        val dataPoints = GraphCalculator().calculate(dawum!!)
+        val seatDistribution = SEAT_DISTRIBUTION.calc(dataPoints.last().values)
+        val sortedDataPoints = dataPoints.sortedBy { it.date }.reversed()
+        val today = ChangesText(sortedDataPoints[1], sortedDataPoints[0], dawum!!).getToday()
+        result = ResultDto(today, seatDistribution, dataPoints, dawum!!.parties, dawum!!.taskers, dawum!!.institutes)
+        logger.info("Updated database")
         dawumListeners.forEach {
             it.getDawum(dawum!!)
         }

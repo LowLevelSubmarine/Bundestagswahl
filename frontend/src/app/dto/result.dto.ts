@@ -1,8 +1,8 @@
 import { DataPoint } from "./data-point.dto";
-import { Today } from "./today.dto";
+import { Changes } from "./changes.dto";
 
 export interface ResultDto {
-  today?: Today
+  changes: Changes
   seatDistribution: Map<number, number>
   points: DataPoint[]
   parties: any

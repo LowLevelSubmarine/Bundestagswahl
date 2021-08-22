@@ -2,8 +2,14 @@
   background-color: rgba(0, 0, 0, 0.04);
   width: 100%;
   display: block;
-  padding: 3em 20vw;
+  padding: 3em 18vw;
   box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  :host {
+    padding: 3em;
+  }
 }
 
 header {
