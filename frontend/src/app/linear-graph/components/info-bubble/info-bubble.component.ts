@@ -1,7 +1,8 @@
 import {Component, HostListener, Input, OnInit} from '@angular/core';
-import {ViewDimensions} from "../linear-graph/view-dimensions";
 import {InfoBubbleDto} from "../../dto/InfoBubbleDto";
 import {GradientComponent} from "../gradient/gradient.component";
+// @ts-ignore
+import * as viewDimensions from "../../../../../wasm";
 
 @Component({
   selector: 'g[lchart-info-bubble]',
@@ -11,7 +12,7 @@ import {GradientComponent} from "../gradient/gradient.component";
 export class InfoBubbleComponent implements OnInit {
 
 
-  @Input() viewDimensions!: ViewDimensions;
+  @Input() viewDimensions!: viewDimensions.ViewDimensions;
   @Input() gradient!: GradientComponent
   bubbleX =0
   bubbleY =0

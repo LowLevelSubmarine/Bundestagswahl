@@ -1,8 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ChartElementGroup, ChartElementValue} from "../../dto/chartElement.dto";
 import {GroupDto} from "../../dto/group-dto";
-import {ViewDimensions} from "../linear-graph/view-dimensions";
 import {animate, keyframes, state, style, transition, trigger} from "@angular/animations";
+// @ts-ignore
+import * as viewDimensions from "../../../../../wasm";
 
 @Component({
   selector: 'g[lchart-gradient]',
@@ -31,7 +32,7 @@ export class GradientComponent implements OnInit {
   gradient:string| undefined
 
   @Input() groups!: GroupDto[]
-  @Input() viewDimensions!: ViewDimensions
+  @Input() viewDimensions!: viewDimensions.ViewDimensions
 
   constructor() { }
 

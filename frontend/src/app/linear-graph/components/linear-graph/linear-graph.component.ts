@@ -2,14 +2,16 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component, ElementRef, HostListener,
-  Input,
+  Input, OnInit,
   Renderer2, ViewChild,
 } from '@angular/core';
 import {ChartElement, ChartElementGroup, YLines} from "../../dto/chartElement.dto";
 import {GroupDto, GroupValueDto} from "../../dto/group-dto";
-import {ViewDimensions} from "./view-dimensions";
 import {InfoBubbleComponent} from "../info-bubble/info-bubble.component";
 import {GradientComponent} from "../gradient/gradient.component";
+import {ViewDimensionsService} from "../../service/view-dimensions.service";
+import {ViewDimensions} from "char-wasm";
+import {BehaviorSubject, Observable, Subject, Subscriber} from "rxjs";
 @Component({
   selector: 'app-linear-graph',
   templateUrl: './linear-graph.component.html',
@@ -25,7 +27,9 @@ export class LinearGraphComponent implements AfterViewInit {
   set data (elements: ChartElement| undefined) {
     if (elements) {
       this._data = elements
-      this.buildGraph(elements)
+      if (this.viewDimensions) {
+        this.buildGraph(elements)
+      }
     }
   }
 
@@ -47,15 +51,18 @@ export class LinearGraphComponent implements AfterViewInit {
   showCircles = true
   bigDataSet = false
 
-  viewDimensions = new ViewDimensions()
+  viewDimensions!: ViewDimensions
+  ready = false
 
-  constructor(private renderer: Renderer2, private changeDetection: ChangeDetectorRef) { }
+  constructor(private viewDimensionService: ViewDimensionsService, private changeDetection: ChangeDetectorRef) {
+
+  }
 
   @HostListener("window:resize",['$event'])
   onresize($event: any) {
-      //TODO: fix: this.viewDimensions.svgHeight = this.svgContainer.nativeElement.offsetHeight
+      this.viewDimensions.svgHeight = this.svgContainer.nativeElement.parentElement.offsetHeight
       this.infoBubble.closeBubble()
-      this.viewDimensions.svgWidth = this.svgContainer.nativeElement.offsetWidth
+      this.viewDimensions.svgWidth = this.svgContainer.nativeElement.parentElement.offsetWidth
       this.viewDimensions.recalculateViewDimensions()
       if (this.viewDimensions.xMultiplier<=290) {
         this.showCircles = false
@@ -64,10 +71,19 @@ export class LinearGraphComponent implements AfterViewInit {
       }
   }
 
+
   ngAfterViewInit() {
-    this.viewDimensions.svgHeight = this.svgContainer.nativeElement.offsetHeight
-    this.viewDimensions.svgWidth = this.svgContainer.nativeElement.offsetWidth
-    this.viewDimensions.recalculateViewDimensions()
+    this.viewDimensionService.viewDimensions().then(res => {
+      this.viewDimensions = res
+      this.ready = true
+      this.changeDetection.detectChanges()
+      if (this._data) {
+        this.viewDimensions.svgHeight= this.svgContainer.nativeElement.parentElement.offsetHeight
+        this.viewDimensions.svgWidth = this.svgContainer.nativeElement.parentElement.offsetWidth
+        this.viewDimensions.recalculateViewDimensions()
+        this.buildGraph(this._data)
+      }
+    })
   }
 
 
