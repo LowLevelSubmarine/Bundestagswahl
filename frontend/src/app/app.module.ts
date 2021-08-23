@@ -4,8 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {HttpClient, HttpClientModule} from "@angular/common/http";
-import { PointGraphComponent } from './components/point-graph/point-graph.component';
-import {ChartCommonModule, LineChartModule, NgxChartsModule} from "@swimlane/ngx-charts";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DatePipe} from "@angular/common";
@@ -17,7 +15,6 @@ import { ParliamentCompositionComponent } from './components/parliament-composit
 @NgModule({
   declarations: [
     AppComponent,
-    PointGraphComponent,
     GraphPartySelectorComponent,
     SectionComponent,
     SectionComponent,
@@ -27,10 +24,8 @@ import { ParliamentCompositionComponent } from './components/parliament-composit
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    LineChartModule,
     BrowserAnimationsModule,
     FormsModule,
-    ChartCommonModule,
     LinearGraphModule,
     ReactiveFormsModule,
   ],
