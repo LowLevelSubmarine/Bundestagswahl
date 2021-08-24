@@ -18,27 +18,32 @@ class GraphCalculator {
 
         val minDay = bundestagSurveys.values.stream().min { it -> it.calcPeriodDate() }.get().date.toEpochDay()
         val maxDay = bundestagSurveys.values.stream().max { it -> it.calcPeriodDate() }.get().date.toEpochDay()
+        val runningThreads = mutableListOf<Thread>()
         for (i in minDay..maxDay+1) {
-            val currDay = LocalDate.ofEpochDay(i)
-            val map = mutableMapOf<Long, FloatAverage>()
-            val adjustmentValues = CombinedSurvey(bundestagSurveys.values.toList()).calcPartyAdjustments(currDay, 30)
-            val currSurveys = mutableListOf<Survey>()
-            bundestagSurveys.filter { it.value.calcPeriodDate() == currDay }.forEach { surveyEntry ->
-                val adjustedResult = surveyEntry.value.results.mapValues {
-                    val adjustmentValue = adjustmentValues[surveyEntry.value.instituteId]?.get(it.key)
-                    if (adjustmentValue != null) it.value + adjustmentValue else it.value
+            val thread = Thread {
+                val currDay = LocalDate.ofEpochDay(i)
+                val map = mutableMapOf<Long, FloatAverage>()
+                val adjustmentValues = CombinedSurvey(bundestagSurveys.values.toList()).calcPartyAdjustments(currDay, 30)
+                val currSurveys = mutableListOf<Survey>()
+                bundestagSurveys.filter { it.value.calcPeriodDate() == currDay }.forEach { surveyEntry ->
+                    val adjustedResult = surveyEntry.value.results.mapValues {
+                        val adjustmentValue = adjustmentValues[surveyEntry.value.instituteId]?.get(it.key)
+                        if (adjustmentValue != null) it.value + adjustmentValue else it.value
+                    }
+                    adjustedResult.forEach { map.getOrPut(it.key) { FloatAverage() }.add(it.value) }
+                    currSurveys.add(surveyEntry.value)
                 }
-                adjustedResult.forEach { map.getOrPut(it.key) { FloatAverage() }.add(it.value) }
-                currSurveys.add(surveyEntry.value)
+                if (currSurveys.isNotEmpty()) {
+                    dataPoints.add(DataPoint(currDay, map.mapValues { it.value.calc() }, currSurveys.map { de._2n1p.bundestagswahl.dto.Survey.fromDawumSurvey(it) }))
+                }
+                /*if (adjustmentValues.containsKey(13L)) {
+                    surveyPoints.add(SurveyPoint(currDay, adjustmentValues.get(13L)!!, 0L, 0L))
+                }*/
             }
-            if (currSurveys.isNotEmpty()) {
-                dataPoints.add(DataPoint(currDay, map.mapValues { it.value.calc() }, currSurveys.map { de._2n1p.bundestagswahl.dto.Survey.fromDawumSurvey(it) }))
-            }
-            /*if (adjustmentValues.containsKey(13L)) {
-                surveyPoints.add(SurveyPoint(currDay, adjustmentValues.get(13L)!!, 0L, 0L))
-            }*/
+            runningThreads.add(thread)
+            thread.start()
         }
-
+        runningThreads.forEach(Thread::join)
         return dataPoints
     }
 
