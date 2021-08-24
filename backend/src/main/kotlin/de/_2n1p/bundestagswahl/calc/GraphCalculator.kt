@@ -44,6 +44,7 @@ class GraphCalculator {
             thread.start()
         }
         runningThreads.forEach(Thread::join)
+        dataPoints.sortBy { it.date }
         return dataPoints
     }
 
