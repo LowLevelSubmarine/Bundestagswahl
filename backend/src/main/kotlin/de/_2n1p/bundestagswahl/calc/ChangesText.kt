@@ -14,7 +14,7 @@ class ChangesText(val fromDataPoint: DataPoint, val toDataPoint: DataPoint, val 
 
     fun getHeadline(): String {
         val instituteText = this.toDataPoint.surveys.joinToString(", ") { survey -> this.dawum.institutes[survey.instituteId]!!.name}
-        return if (this.fromDataPoint.surveys.size == 1) "Neue Studie: $instituteText" else "Neue Studien: $instituteText."
+        return if (this.toDataPoint.surveys.size == 1) "Neue Studie: $instituteText" else "Neue Studien: $instituteText."
     }
 
     fun getSubtext(): String {
