@@ -7,6 +7,7 @@ import {async} from "rxjs";
 import {ParliamentCompositionElement} from "./components/parliament-composition/parliament-composition.component";
 import {PartyColors} from "./party-colors";
 import {Changes} from "./dto/changes.dto";
+import {GraphService} from "./graph.service";
 
 @Component({
   selector: 'app-root',
@@ -16,16 +17,16 @@ import {Changes} from "./dto/changes.dto";
 export class AppComponent{
 
   title = 'frontend';
-  data: ChartElement|undefined = undefined
   highlightedGroup: string| undefined = undefined
   changes: Changes | undefined
   seatDistribution: ParliamentCompositionElement[] = []
   from = this.datePipe.transform(new Date().setDate(new Date().getDate() - 30), "yyyy-MM-dd")!
   to = this.datePipe.transform(new Date(), "yyyy-MM-dd")!
+  data = this.chartService.getChartDataObserver(new Date(this.from), new Date(this.to))
 
-  constructor(private apiService: ApiService, private changeDetection: ChangeDetectorRef, private datePipe: DatePipe) {
+  constructor(private apiService: ApiService, private changeDetection: ChangeDetectorRef, private datePipe: DatePipe, private chartService: GraphService) {
     this.applyDates()
-    this.apiService.getData().subscribe((data) => {
+    this.apiService.getDataObserver().subscribe((data) => {
       this.changes = data.changes
       let dist: ParliamentCompositionElement[] = []
       for (let [key, value] of Object.entries(data.seatDistribution)) {
@@ -36,9 +37,7 @@ export class AppComponent{
   }
 
   applyDates() {
-    this.apiService.getChartData(new Date(this.from), new Date(this.to)).subscribe((observer) => {
-      this.data = observer
-    })
+    this.data = this.chartService.getChartDataObserver(new Date(this.from), new Date(this.to))
   }
 
 
