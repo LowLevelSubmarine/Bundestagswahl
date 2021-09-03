@@ -43,7 +43,7 @@ class GraphCalculator {
                 }*/
             }
             runningThreads.add(thread)
-            thread.start()
+            thread.run()
         }
         runningThreads.forEach(Thread::join)
         dataPoints.sortBy { it.date }
