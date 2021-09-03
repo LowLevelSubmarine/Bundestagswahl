@@ -26,6 +26,10 @@ class FloatAverage : Average<Float> {
         return this.cache!!
     }
 
+    override fun getAmount(): Int {
+        return this.amount
+    }
+
     companion object {
 
         fun <K, V : Number> Map<K, Average<V>>.calcAverages(): Map<K, V> {

@@ -10,8 +10,9 @@
   <div class="divider">
     <app-linear-graph
       id="graph"
-      [highlitedGroup]="highlightedGroup"
-      [data]="data!">
+      [highlightedGroup]="highlightedGroup"
+      [minYValue]="0"
+      [data]="data |async">
     </app-linear-graph>
 
     <app-graph-party-selector

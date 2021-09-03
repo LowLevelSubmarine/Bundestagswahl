@@ -25,6 +25,8 @@ export class InfoBubbleComponent implements OnInit {
   private mouseOverBubble = false
   private requestBubbleClose = false
 
+  private rotatedY = false
+  private originalX = 0
   constructor() { }
 
   ngOnInit(): void {
@@ -48,7 +50,21 @@ export class InfoBubbleComponent implements OnInit {
   openBubble($event: InfoBubbleDto ) {
     this.gradient.hideGradient()
     this.bubbleX = $event.x - (this.bubbleWidth/2)
+    this.originalX = this.bubbleX
+    if (this.bubbleX<this.viewDimensions.xOffset) {
+      this.bubbleX = this.viewDimensions.xOffset
+    } else if(this.bubbleX+this.bubbleWidth>this.viewDimensions.svgWidth) {
+      this.bubbleX = this.viewDimensions.svgWidth - this.bubbleWidth
+    }
+
+
     this.bubbleY =  $event.y - this.bubbleHeight - (this.noseWidth/2)
+    if (this.bubbleY<0) {
+      this.bubbleY = this.bubbleY+this.bubbleHeight + (this.noseWidth)
+      this.rotatedY = true
+    } else {
+      this.rotatedY = false
+    }
     this.bubbleOpen = true
     this.bubbleInfo = $event.info
     this.gradient.showGradient($event.groupname)
@@ -69,9 +85,20 @@ export class InfoBubbleComponent implements OnInit {
 
   getBubbleTrianglepoints(): string {
     let result = ""
-    result += `${this.bubbleX+(this.bubbleWidth/2) - (this.noseWidth/2)},${this.bubbleY+ this.bubbleHeight-0.2} `
-    result += `${this.bubbleX+(this.bubbleWidth/2) + (this.noseWidth/2)},${this.bubbleY+ this.bubbleHeight-0.2} `
-    result += `${this.bubbleX+(this.bubbleWidth/2)},${this.bubbleY+this.bubbleHeight+(this.noseWidth/2)} `
+    if (this.originalX+(this.bubbleWidth/2) - (this.noseWidth/2)<this.viewDimensions.xOffset ||
+      this.originalX +(this.bubbleWidth/2)+20 > this.viewDimensions.svgWidth) {
+      return result
+    }
+
+    if (this.rotatedY) {
+      result += `${this.originalX+(this.bubbleWidth/2) - (this.noseWidth/2)},${this.bubbleY-0.2} `
+      result += `${this.originalX+(this.bubbleWidth/2) + (this.noseWidth/2)},${this.bubbleY-0.2} `
+      result += `${this.originalX+(this.bubbleWidth/2)},${this.bubbleY-(this.noseWidth/2)} `
+    } else {
+      result += `${this.originalX+(this.bubbleWidth/2) - (this.noseWidth/2)},${this.bubbleY+ this.bubbleHeight-0.2} `
+      result += `${this.originalX+(this.bubbleWidth/2) + (this.noseWidth/2)},${this.bubbleY+ this.bubbleHeight-0.2} `
+      result += `${this.originalX+(this.bubbleWidth/2)},${this.bubbleY+this.bubbleHeight+(this.noseWidth/2)} `
+    }
     return  result
   }
 
