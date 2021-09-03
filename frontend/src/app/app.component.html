@@ -10,7 +10,8 @@
   <div class="divider">
     <app-linear-graph
       id="graph"
-      [highlitedGroup]="highlightedGroup"
+      [highlightedGroup]="highlightedGroup"
+      [minYValue]="0"
       [data]="data |async">
     </app-linear-graph>
 

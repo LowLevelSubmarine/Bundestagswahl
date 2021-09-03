@@ -10,6 +10,7 @@ import {GroupDto, GroupValueDto} from "../../dto/group-dto";
 import {ViewDimensions} from "./view-dimensions";
 import {InfoBubbleComponent} from "../info-bubble/info-bubble.component";
 import {GradientComponent} from "../gradient/gradient.component";
+import {MarkerDto} from "../../dto/marker.dto";
 @Component({
   selector: 'app-linear-graph',
   templateUrl: './linear-graph.component.html',
@@ -30,7 +31,7 @@ export class LinearGraphComponent implements AfterViewInit {
   }
 
   @Input()
-  set highlitedGroup(name: string| undefined) {
+  set highlightedGroup(name: string| undefined) {
     if (name) {
       this.gradientComponent.showGradient(name)
     } else if (this.gradientComponent) {
@@ -38,8 +39,10 @@ export class LinearGraphComponent implements AfterViewInit {
 
     }
   }
+  @Input()
+  minYValue: undefined | number = undefined
   _data!: ChartElement
-  uniPos: { pos:number, name:string }[] = []
+  uniPos: MarkerDto[] = []
   groups: GroupDto[] = []
   circleRadius = 4
   circleStroke = 2
@@ -48,6 +51,9 @@ export class LinearGraphComponent implements AfterViewInit {
   bigDataSet = false
 
   viewDimensions = new ViewDimensions()
+
+  lastDate: number| undefined = undefined
+  dateWidth = 0
 
   constructor(private renderer: Renderer2, private changeDetection: ChangeDetectorRef) { }
 
@@ -108,6 +114,7 @@ export class LinearGraphComponent implements AfterViewInit {
       return
     }
 
+    if (this.minYValue != undefined) minValueY = this.minYValue
 
     this.uniPos = []
 
@@ -145,5 +152,22 @@ export class LinearGraphComponent implements AfterViewInit {
 
   getStrokeColor(color:string) {
     return `stroke:${color};`
+  }
+
+  isShowDate(pos: number): boolean {
+    const margin = 20
+    const lastElements = document.getElementsByClassName("xText")
+     if (lastElements.length == 0) {
+       return true
+     } else {
+       const lastElement = lastElements[lastElements.length-1]
+       const width = lastElements[0].getBoundingClientRect().width;
+       const x = (<any>lastElement).x.baseVal[0].value
+       if (this.viewDimensions.getX(pos) > x+width+margin && this.viewDimensions.getX(pos) +width < this.viewDimensions.svgWidth) {
+         return true
+       } else  {
+         return false
+       }
+     }
   }
 }

@@ -5,7 +5,7 @@ export class ViewDimensions {
 
   xOffset = 40
   yPaddingTop = this.circleRadius*2//this.circleRadius+ 60
-  yPaddingBottom = this.circleRadius+10 //this.circleRadius+10
+  yPaddingBottom = this.circleRadius+50 //this.circleRadius+10
 
   svgWidth = 1000
   svgHeight = 500
