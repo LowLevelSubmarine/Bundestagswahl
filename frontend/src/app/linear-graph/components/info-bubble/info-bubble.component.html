@@ -4,10 +4,6 @@
     fill: rgba(0, 0, 0, 0.8);
   }
 
-  text {
-    fill: black;
-    text-align: center;
-  }
 </style>
 
 
@@ -18,7 +14,6 @@
   <svg:polygon [attr.points]="getBubbleTrianglepoints()" class="bubbleBackground"></svg:polygon>
 
   <g *ngFor="let text of getEntries(); index as i">
-    <svg:text [attr.x]="getBubbleCaptionTextX()" [attr.y]="getBubbleCaptionTextY()" text-anchor="middle">{{text[0]}}
-      :{{text[1]}}</svg:text>
+    <svg:text [attr.x]="getBubbleCaptionTextX()" [attr.y]="getBubbleCaptionTextY()" text-anchor="middle" id="bubbletext">{{text[0]}}: {{text[1]}}</svg:text>
   </g>
 </svg:g>

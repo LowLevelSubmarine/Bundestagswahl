@@ -22,7 +22,7 @@ export class LinearGraphComponent implements AfterViewInit {
   @ViewChild("svgContainer") svgContainer!: ElementRef
 
   @Input()
-  set data (elements: ChartElement| undefined) {
+  set data (elements: ChartElement| null) {
     if (elements) {
       this._data = elements
       this.buildGraph(elements)

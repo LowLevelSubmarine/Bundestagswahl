@@ -11,7 +11,7 @@
     <app-linear-graph
       id="graph"
       [highlitedGroup]="highlightedGroup"
-      [data]="data!">
+      [data]="data |async">
     </app-linear-graph>
 
     <app-graph-party-selector

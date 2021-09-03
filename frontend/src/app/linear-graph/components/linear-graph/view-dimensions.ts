@@ -3,9 +3,9 @@ export class ViewDimensions {
 
   circleRadius = 4
 
-  xOffset = 150
-  yPaddingTop = this.circleRadius+ 60
-  yPaddingBottom = this.circleRadius+10
+  xOffset = 40
+  yPaddingTop = this.circleRadius*2//this.circleRadius+ 60
+  yPaddingBottom = this.circleRadius+10 //this.circleRadius+10
 
   svgWidth = 1000
   svgHeight = 500
@@ -26,7 +26,7 @@ export class ViewDimensions {
 
 
   getX(point: number) {
-    return point * (this.xMultiplier)+(this.xOffset/2)
+    return point * (this.xMultiplier)+(this.xOffset)
   }
 
   getY(point: number) {

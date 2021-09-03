@@ -20,7 +20,7 @@ class ParserService(val httpClientService: HttpClientService) {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
     var dawum: Dawum? = null
     var result: ResultDto?= null
-    private var lastParse: LocalDateTime? = null
+    var lastParse: LocalDateTime? = null
     private val dawumListeners:MutableList<DawumListener> = mutableListOf()
 
     @Scheduled(fixedDelay = 30000)
