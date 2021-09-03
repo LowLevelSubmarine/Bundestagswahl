@@ -6,7 +6,7 @@ import de._2n1p.bundestagswahl.utils.Optional.Companion.orNull
 import java.lang.Long.max
 import java.lang.Long.min
 import java.time.LocalDate
-import java.time.Period
+import kotlin.math.abs
 
 class CombinedSurvey(private val surveys: List<Survey>) {
 
@@ -25,26 +25,32 @@ class CombinedSurvey(private val surveys: List<Survey>) {
         val avgByInstituteAndParty = mutableMapOf<Long, MutableMap<Long, FloatAverage>>()
         val newestSurveyEpochDay = surveys.maxByOrNull { it.calcPeriodDate() }!!.calcPeriodDate().toEpochDay()
         val oldestSurveyEpochDay = surveys.minByOrNull { it.calcPeriodDate() }!!.calcPeriodDate().toEpochDay()
-        val startDay = min(date.toEpochDay() - range, newestSurveyEpochDay)
-        val endDay = max(date.toEpochDay() + range, oldestSurveyEpochDay)
+        val startDay = max(date.toEpochDay() - range, oldestSurveyEpochDay)
+        val endDay = min(date.toEpochDay() + range, newestSurveyEpochDay)
         for (i in startDay..endDay) {
             val currentDate = LocalDate.ofEpochDay(i)
             for (surveysByInstituteEntry in this.surveysByInstitute.entries) {
-                val avgByParty = avgByInstituteAndParty.getOrPut(surveysByInstituteEntry.key){ mutableMapOf() }
-                val result = getDate(currentDate, range, surveysByInstituteEntry.value)
-                for (resultEntry in result.entries) {
-                    avgByParty.getOrPut(resultEntry.key){ FloatAverage() }.add(resultEntry.value)
+                val result = getDate(currentDate, 60, surveysByInstituteEntry.value)
+                if (result.isNotEmpty()) {
+                    val avgByParty = avgByInstituteAndParty.getOrPut(surveysByInstituteEntry.key){ mutableMapOf() }
+                    for (resultEntry in result.entries) {
+                        avgByParty.getOrPut(resultEntry.key){ FloatAverage() }.add(resultEntry.value)
+                    }
                 }
             }
         }
+        val sufficientInstitutes = mutableListOf<Long>()
         val avgByParty = mutableMapOf<Long, FloatAverage>()
         for (avgByInstituteAndPartyEntry in avgByInstituteAndParty) {
-            for (avgByPartyEntry in avgByInstituteAndPartyEntry.value) {
-                avgByParty.getOrPut(avgByPartyEntry.key){ FloatAverage() }.add(avgByPartyEntry.value.calc())
+            if (avgByInstituteAndPartyEntry.value[0]!!.getAmount() * 2 > endDay - startDay) {
+                sufficientInstitutes.add(avgByInstituteAndPartyEntry.key)
+                for (avgByPartyEntry in avgByInstituteAndPartyEntry.value) {
+                    avgByParty.getOrPut(avgByPartyEntry.key){ FloatAverage() }.add(avgByPartyEntry.value.calc())
+                }
             }
         }
         val adjByInstituteAndParty = mutableMapOf<Long, MutableMap<Long, Float>>()
-        for (adjByInstituteAndPartyEntry in avgByInstituteAndParty) {
+        for (adjByInstituteAndPartyEntry in avgByInstituteAndParty.filterKeys { sufficientInstitutes.contains(it) }) {
             val adjByParty = mutableMapOf<Long, Float>()
             for (adjByPartyEntry in adjByInstituteAndPartyEntry.value) {
                 adjByParty[adjByPartyEntry.key] = avgByParty[adjByPartyEntry.key]!!.calc() - adjByPartyEntry.value.calc()
@@ -55,15 +61,13 @@ class CombinedSurvey(private val surveys: List<Survey>) {
     }
 
     private fun getDate(date: LocalDate, range: Int, surveys: List<Survey>): Map<Long, Float> {
-        for (survey in surveys) {
-            if (survey.calcPeriodDate() == date) return survey.results
-        }
         val surveyNext = surveys.stream().filter { it.calcPeriodDate().isBetween(date, date.plusDays(range.toLong())) }.min(DayDistance(date)).orNull()
         val surveyPrev = surveys.stream().filter { it.calcPeriodDate().isBetween(date, date.minusDays(range.toLong())) }.min(DayDistance(date)).orNull()
         if (surveyNext == null || surveyPrev == null) {
             return mapOf()
         }
-        return interpolateSurvey(surveyPrev, surveyNext, date)
+        if (surveyNext == surveyPrev) return surveyNext.results
+        else return interpolateSurvey(surveyPrev, surveyNext, date)
     }
 
     private fun interpolateSurvey(s1: Survey, s2: Survey, date: LocalDate): Map<Long, Float> {
@@ -83,7 +87,11 @@ class CombinedSurvey(private val surveys: List<Survey>) {
     private class DayDistance(private val optimum: LocalDate) : Comparator<Survey> {
 
         override fun compare(p0: Survey?, p1: Survey?): Int {
-            return Period.between(p0!!.calcPeriodDate(), optimum).days - Period.between(p1!!.calcPeriodDate(), optimum).days
+            return distance(p0!!).compareTo(distance(p1!!))
+        }
+
+        fun distance(survey: Survey): Long {
+            return abs(survey.calcPeriodDate().toEpochDay() - optimum.toEpochDay())
         }
 
     }

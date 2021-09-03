@@ -12,7 +12,8 @@ data class Survey(
     val parliamentId: Long,
     val instituteId: Long,
     val taskerId: Long,
-    val results: Map<Long, Float>
+    val results: Map<Long, Float>,
+    var periodDate: LocalDate? = null,
 ) {
 
     companion object {
@@ -20,7 +21,7 @@ data class Survey(
             return Survey(
                 date = LocalDate.parse(gson.surf("Date").asString),
                 surveyPeriodStart = LocalDate.parse(gson.surf("Survey_Period", "Date_Start").asString),
-                surveyPeriodEnd = LocalDate.parse(gson.surf("Survey_Period", "Date_Start").asString),
+                surveyPeriodEnd = LocalDate.parse(gson.surf("Survey_Period", "Date_End").asString),
                 surveyedPersons = gson.surf("Surveyed_Persons").asInt,
                 parliamentId = gson.surf("Parliament_ID").asLong,
                 instituteId = gson.surf("Institute_ID").asLong,
@@ -30,8 +31,10 @@ data class Survey(
         }
     }
 
+    @Synchronized
     fun calcPeriodDate(): LocalDate {
-        return LocalDate.ofEpochDay((this.surveyPeriodStart.toEpochDay() + this.surveyPeriodEnd.toEpochDay()) / 2)
+        if (this.periodDate == null) this.periodDate = LocalDate.ofEpochDay((this.surveyPeriodStart.toEpochDay() + this.surveyPeriodEnd.toEpochDay()) / 2)
+        return this.periodDate!!
     }
 
 }
