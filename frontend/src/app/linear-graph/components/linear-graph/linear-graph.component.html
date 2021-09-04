@@ -2,7 +2,7 @@
   <svg class="mainsvg" [attr.height]="viewDimensions.svgHeight" [attr.width]="viewDimensions.svgWidth">
     <!-- Data grid  Y-->
     <g *ngFor="let marker of yMarker">
-      <text [attr.x]="viewDimensions.getX(0)-8" [attr.y]="viewDimensions.getY(marker.position)" class="yText"
+      <text *ngIf="showPosition(marker)" [attr.x]="viewDimensions.getX(0)-8" [attr.y]="viewDimensions.getY(marker.position)" class="yText"
             alignment-baseline="central" text-anchor="end">{{marker.name}}</text>
       <line [attr.x1]="viewDimensions.getX(0)" [attr.y1]="viewDimensions.getY(marker.position)"
             [attr.x2]="viewDimensions.getX(1)" [attr.y2]="viewDimensions.getY(marker.position)"
@@ -10,8 +10,8 @@
     </g>
 
     <!-- Data grid X-->
-    <g *ngFor="let marker of uniPos">
-      <text *ngIf="isShowDate(marker.pos)" [attr.x]="viewDimensions.getX(marker.pos)" [attr.y]="viewDimensions.getY(0)+20" class="xText"
+    <g *ngFor="let marker of uniPos; index as i">
+      <text *ngIf="isShowDate(marker.pos, i)" [attr.x]="viewDimensions.getX(marker.pos)" [attr.y]="viewDimensions.getY(0)+20" class="xText"
             alignment-baseline="central" text-anchor="middle" >{{marker.name}}</text>
       <line [attr.x1]="this.viewDimensions.getX(marker.pos)" [attr.y1]="this.viewDimensions.getY(1)"
             [attr.x2]="this.viewDimensions.getX(marker.pos)"
@@ -25,14 +25,10 @@
     <!-- Data Lines -->
 
     <g *ngFor="let group of groups">
-      <g *ngFor="let point of group.values; index as i">
-        <g *ngIf="(i < group.values.length-1)" lchart-line [x1]="this.viewDimensions.getX(point.position)"
-           [y1]="this.viewDimensions.getY(point.y)"
-           [x2]="this.viewDimensions.getX(group.values[i+1].position)"
-           [y2]="this.viewDimensions.getY(group.values[i+1].y)"
-           [color]="getStrokeColor(group.color)"
-           [groupname]="group.group" [gradient]="gradientComponent">
-        </g>
+      <g lchart-line
+         [group]="group"
+         [viewDimensions]="viewDimensions"
+         [gradient]="gradientComponent">
       </g>
     </g>
 

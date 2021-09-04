@@ -8,7 +8,7 @@
 
 
 <svg:g *ngIf="this.bubbleOpen">
-  <svg:rect [attr.x]="bubbleX" [attr.y]="bubbleY" rx="20" ry="20" [attr.width]="bubbleWidth"
+  <svg:rect [attr.x]="bubbleX" [attr.y]="bubbleY" rx="10" ry="10" [attr.width]="bubbleWidth"
         [attr.height]="bubbleHeight"
         class="bubbleBackground"></svg:rect>
   <svg:polygon [attr.points]="getBubbleTrianglepoints()" class="bubbleBackground"></svg:polygon>
