@@ -8,25 +8,32 @@
 </app-section>
 <app-section title="Trend" id="section-trend">
   <div class="divider">
-    <app-linear-graph
-      id="graph"
-      [highlightedGroup]="highlightedGroup"
-      [minYValue]="0"
-      [data]="data |async">
-    </app-linear-graph>
+    <input type="date" id="from" name="from" (change)="applyDates()" id="firstDate" class="datePicker" [(ngModel)]="from">
+    <input type="date" id="to" name="to" (change)="applyDates()" class="datePicker" [(ngModel)]="to">
 
-    <app-graph-party-selector
-      [parties]="[
-        {shortcut:'Grüne', name:'Bündnis 90, Die Grünen', id: 0, color:'#4C9849'},
-        {shortcut:'CDU/CSU', name:'Christlich Demokratische Union / Christlich Soziale Union', id: 1, color:'#232323'},
-        {shortcut:'SPD', name:'Sozialdemokratische Partei Deutschland', id: 2, color:'#E51D1D'}
+    <div class="graphContainer">
+      <app-linear-graph
+        id="graph"
+        [highlightedGroup]="highlightedGroup"
+        [minYValue]="0"
+        [data]="data |async">
+      </app-linear-graph>
+
+      <app-graph-party-selector
+        [parties]="[
+        {shortcut:'Grüne', name:'Bündnis 90, Die Grünen', id: 4, color:partyColors.getColorByParty(4)},
+        {shortcut:'CDU/CSU', name:'Christlich Demokratische Union / Christlich Soziale Union', id: 1, color:partyColors.getColorByParty(1)},
+        {shortcut:'SPD', name:'Sozialdemokratische Partei Deutschland', id: 2, color:partyColors.getColorByParty(2)},
+        {shortcut:'FDP', name:'Freie Demokratische Partei', id: 3, color:partyColors.getColorByParty(3)},
+        {shortcut:'AfD', name:'Alternative für Deutschland', id: 7, color:partyColors.getColorByParty(7)},
+        {shortcut:'Linke', name:'Die Linke', id: 5, color:partyColors.getColorByParty(5)},
+        {shortcut:'Freie Wähler', name:'Freie Wähler', id: 8, color:partyColors.getColorByParty(8)},
+        {shortcut:'Sonstige', name:'Sonstige', id: 0, color:partyColors.getColorByParty(0)}
       ]"
-      (onChange)="onPartySelect($event)"
-    ></app-graph-party-selector>
+        (onChange)="onPartySelect($event)"
+      ></app-graph-party-selector>
+    </div>
   </div>
-  <input type="date" id="from" name="from" [(ngModel)]="from">
-  <input type="date" id="to" name="to" [(ngModel)]="to">
-  <button (click)="applyDates()">Search</button>
 </app-section>
 <app-section title="Sitzverteilung" id="section-parliament-composition">
   <div class="divider">

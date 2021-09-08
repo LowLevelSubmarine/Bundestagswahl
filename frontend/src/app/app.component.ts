@@ -1,9 +1,8 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ApiService} from "./api.service";
 import {ChartElement, ChartElementGroup} from "./linear-graph/dto/chartElement.dto";
 import {DatePipe} from "@angular/common";
 import {Party} from "./dto/party.dto";
-import {async} from "rxjs";
 import {ParliamentCompositionElement} from "./components/parliament-composition/parliament-composition.component";
 import {PartyColors} from "./party-colors";
 import {Changes} from "./dto/changes.dto";
@@ -14,7 +13,7 @@ import {GraphService} from "./graph.service";
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent{
+export class AppComponent {
 
   title = 'frontend';
   highlightedGroup: string| undefined = undefined
@@ -23,6 +22,9 @@ export class AppComponent{
   from = this.datePipe.transform(new Date().setDate(new Date().getDate() - 30), "yyyy-MM-dd")!
   to = this.datePipe.transform(new Date(), "yyyy-MM-dd")!
   data = this.chartService.getChartDataObserver(new Date(this.from), new Date(this.to))
+  partyColors = PartyColors
+
+  @ViewChild("fromDate") fromDate!: ElementRef
 
   constructor(private apiService: ApiService, private changeDetection: ChangeDetectorRef, private datePipe: DatePipe, private chartService: GraphService) {
     this.applyDates()
@@ -41,8 +43,8 @@ export class AppComponent{
   }
 
 
-  onPartySelect($event: Party) {
-    this.highlightedGroup  = $event.shortcut
+  onPartySelect($event: Party| undefined) {
+    this.highlightedGroup  = $event?.shortcut
     console.log($event)
   }
 }

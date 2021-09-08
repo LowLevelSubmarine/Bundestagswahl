@@ -2,7 +2,7 @@ li {
   padding: 0.5em;
 }
 
-[type=radio] {
+[type=checkbox] {
   display: none;
 }
 
@@ -10,12 +10,12 @@ form {
   width: max-content;
 }
 
-[type=radio]:checked ~ label {
+[type=checkbox]:checked ~ label {
   background-color: rgba(0, 0, 0, 0.04);
   font-weight: 600;
 }
 
-[type=radio]:checked ~ label .party-circle {
+[type=checkbox]:checked ~ label .party-circle {
   transform: scale(0.8);
 }
 
