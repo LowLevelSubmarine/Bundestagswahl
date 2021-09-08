@@ -1,10 +1,10 @@
 <form [formGroup]="form">
   <div *ngFor="let party of this.parties">
     <input
-      type="radio"
-      formControlName="party"
+      type="checkbox"
       [value]="party.id"
       [id]="party.id"
+      [formControlName]="party.shortcut"
       (change)="this.onChangeFunction(party)">
     <label [for]="party.id">
       <div class="party-circle" [attr.style]="'background-color: ' + party.color + ';'"></div>

@@ -25,6 +25,28 @@ app-section {
   margin: 3em 0;
 }
 
+.graphContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+#graph {
+  grid-column: span 3;
+}
+
+.datePicker {
+  font-family: 'Josefin Sans', sans-serif;
+  border-radius: 5px;
+  border-width: thin;
+  padding-left: 1%;
+  padding-bottom: 0.5%;
+  padding-top: 0.5%;
+  margin-left: 2%;
+}
+
+#firstDate {
+  margin-left: 5%;
+}
+
 #section-trend .divider {
   //display: grid;
   display: block;

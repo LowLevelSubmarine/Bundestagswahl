@@ -43,8 +43,8 @@ export class AppComponent {
   }
 
 
-  onPartySelect($event: Party) {
-    this.highlightedGroup  = $event.shortcut
+  onPartySelect($event: Party| undefined) {
+    this.highlightedGroup  = $event?.shortcut
     console.log($event)
   }
 }
