@@ -11,6 +11,6 @@ fun main(args: Array<String>) {
 
 @EnableScheduling
 @SpringBootApplication
-class BundestagswahlApplication {
+open class BundestagswahlApplication {
 
 }
